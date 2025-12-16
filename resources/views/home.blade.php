@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-app-layout>
     <!-- HERO -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-400 py-20">
         <div class="max-w-7xl mx-auto px-6 text-white">
@@ -20,11 +18,11 @@
                 <h2 class="text-xl font-bold text-blue-700">
                     Year End Sale 🎉
                 </h2>
-                <p>Diskon hotel hingga 30%</p>
+                <p>Diskon hotel hingga 10000%</p>
             </div>
             <button class="bg-blue-600 text-white px-4 py-2 rounded">
                 Lihat Promo
             </button>
         </div>
     </div>
-@endsection
+</x-app-layout>
