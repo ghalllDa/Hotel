@@ -16,4 +16,10 @@ class Hotel extends Model
         'gambar',
         'fasilitas',
     ];
+       public function rooms()
+    {
+        return $this->hasMany(Room::class);
+    }
 }
+
+
