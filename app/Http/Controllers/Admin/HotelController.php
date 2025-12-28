@@ -24,18 +24,23 @@ class HotelController extends Controller
     {
         $data = $request->validate([
             'nama_hotel' => 'required|string',
-            'lokasi' => 'required|string',
-            'harga' => 'required|integer',
-            'gambar' => 'nullable|image',
-            'fasilitas' => 'required|string',
+            'lokasi'     => 'required|string',
+            'latitude'   => 'required',
+            'longitude'  => 'required',
+            'harga'      => 'required|integer',
+            'fasilitas'  => 'required|string',
+            'gambar'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        if($request->hasFile('gambar')){
+        if ($request->hasFile('gambar')) {
             $data['gambar'] = $request->file('gambar')->store('hotels', 'public');
         }
 
         Hotel::create($data);
-        return redirect()->route('hotels.index')->with('success', 'Hotel berhasil ditambahkan!');
+
+        return redirect()
+            ->route('hotels.index')
+            ->with('success', 'Hotel berhasil ditambahkan!');
     }
 
     public function edit(Hotel $hotel)
@@ -47,26 +52,39 @@ class HotelController extends Controller
     {
         $data = $request->validate([
             'nama_hotel' => 'required|string',
-            'lokasi' => 'required|string',
-            'harga' => 'required|integer',
-            'gambar' => 'nullable|image',
-            'fasilitas' => 'required|string',
+            'lokasi'     => 'required|string',
+            'latitude'   => 'required',
+            'longitude'  => 'required',
+            'harga'      => 'required|integer',
+            'fasilitas'  => 'required|string',
+            'gambar'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        if($request->hasFile('gambar')){
-            // hapus file lama
-            if($hotel->gambar) Storage::disk('public')->delete($hotel->gambar);
+        if ($request->hasFile('gambar')) {
+            if ($hotel->gambar) {
+                Storage::disk('public')->delete($hotel->gambar);
+            }
+
             $data['gambar'] = $request->file('gambar')->store('hotels', 'public');
         }
 
         $hotel->update($data);
-        return redirect()->route('hotels.index')->with('success', 'Hotel berhasil diperbarui!');
+
+        return redirect()
+            ->route('hotels.index')
+            ->with('success', 'Hotel berhasil diperbarui!');
     }
 
     public function destroy(Hotel $hotel)
     {
-        if($hotel->gambar) Storage::disk('public')->delete($hotel->gambar);
+        if ($hotel->gambar) {
+            Storage::disk('public')->delete($hotel->gambar);
+        }
+
         $hotel->delete();
-        return redirect()->route('hotels.index')->with('success', 'Hotel berhasil dihapus!');
+
+        return redirect()
+            ->route('hotels.index')
+            ->with('success', 'Hotel berhasil dihapus!');
     }
 }
