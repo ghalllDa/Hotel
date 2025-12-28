@@ -7,7 +7,7 @@ use App\Models\Hotel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class HotelController extends Controller
+class AdminHotelController extends Controller
 {
     public function index()
     {
@@ -24,12 +24,12 @@ class HotelController extends Controller
     {
         $data = $request->validate([
             'nama_hotel' => 'required|string',
-            'lokasi'     => 'required|string',
-            'latitude'   => 'required',
-            'longitude'  => 'required',
-            'harga'      => 'required|integer',
-            'fasilitas'  => 'required|string',
-            'gambar'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'lokasi' => 'required|string',
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'harga' => 'required|integer',
+            'fasilitas' => 'required|string',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -52,12 +52,12 @@ class HotelController extends Controller
     {
         $data = $request->validate([
             'nama_hotel' => 'required|string',
-            'lokasi'     => 'required|string',
-            'latitude'   => 'required',
-            'longitude'  => 'required',
-            'harga'      => 'required|integer',
-            'fasilitas'  => 'required|string',
-            'gambar'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'lokasi' => 'required|string',
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'harga' => 'required|integer',
+            'fasilitas' => 'required|string',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -87,4 +87,26 @@ class HotelController extends Controller
             ->route('hotels.index')
             ->with('success', 'Hotel berhasil dihapus!');
     }
+
+    public function search(Request $request)
+    {
+        $lat = $request->latitude;
+        $lng = $request->longitude;
+        $radius = 5;
+
+        return Hotel::selectRaw("
+        hotels.*,
+        (6371 * acos(
+            cos(radians(?))
+            * cos(radians(latitude))
+            * cos(radians(longitude) - radians(?))
+            + sin(radians(?))
+            * sin(radians(latitude))
+        )) AS distance
+    ", [$lat, $lng, $lat])
+            ->having('distance', '<=', $radius)
+            ->orderBy('distance')
+            ->get();
+    }
+
 }

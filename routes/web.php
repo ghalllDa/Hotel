@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Admin\HotelController;
+use App\Http\Controllers\HotelController; // USER
+use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\RoomController;
 
 /*
@@ -12,7 +13,7 @@ use App\Http\Controllers\Admin\RoomController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return view('home'); // halaman landing
+    return view('home');
 });
 
 /*
@@ -33,6 +34,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
+
+    // USER HOTEL (SEARCH & DETAIL)
+    //Route::get('/hotels/search', [HotelController::class, 'search'])
+        //->name('hotels.search');
+
+    //Route::get('/hotels/{hotel}', [HotelController::class, 'show'])
+        //->name('hotels.show');
 });
 
 /*
@@ -44,11 +52,9 @@ Route::middleware(['auth', 'role:admin_operasional'])
     ->prefix('admin-operasional')
     ->group(function () {
 
-    // CRUD Hotel
-    Route::resource('hotels', HotelController::class);
+        Route::resource('hotels', AdminHotelController::class);
+        Route::resource('hotels.rooms', RoomController::class);
+    });
 
-    // CRUD Kamar (nested rooms per hotel)
-    Route::resource('hotels.rooms', RoomController::class);
-});
-
-require __DIR__.'/auth.php';
+Route::get('/hotels-nearby', [HotelController::class, 'nearby']);
+require __DIR__ . '/auth.php';
