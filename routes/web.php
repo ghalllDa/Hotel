@@ -4,11 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HotelController; // USER
+use App\Http\Controllers\BookingController; // BOOKING
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\HotelImageController;
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -38,11 +37,13 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
+    // DETAIL HOTEL (USER)
     Route::get('/hotels/{id}', [HotelController::class, 'show'])
         ->name('hotels.show');
 
-    // Route::get('/hotels/{hotel}', [HotelController::class, 'show'])
-    //     ->name('hotels.show');
+    // BOOKING KAMAR
+    Route::get('/booking/{room}', [BookingController::class, 'create'])
+        ->name('booking.create');
 });
 
 /*
@@ -54,28 +55,26 @@ Route::middleware(['auth', 'role:admin_operasional'])
     ->prefix('admin-operasional')
     ->group(function () {
 
-        // HOTEL (CRUD + SHOW)
+        // HOTEL (CRUD)
         Route::resource('hotels', AdminHotelController::class);
 
         // ROOM PER HOTEL
         Route::resource('hotels.rooms', RoomController::class);
 
-        /*
-        |--------------------------------------------------------------------------
-        | 🔹 TAMBAHAN (WAJIB) — DETAIL HOTEL (KLIK CARD)
-        |--------------------------------------------------------------------------
-        */
+        // DETAIL HOTEL (ADMIN)
         Route::get(
             'hotels/{hotel}',
             [AdminHotelController::class, 'show']
         )->name('admin.hotels.show');
 
+        // HAPUS FOTO HOTEL
         Route::delete(
             'hotels/images/{image}',
             [HotelImageController::class, 'destroy']
         )->name('admin.hotels.images.destroy');
     });
 
+// HOTEL TERDEKAT
 Route::get('/hotels-nearby', [HotelController::class, 'nearby']);
 
 require __DIR__ . '/auth.php';
