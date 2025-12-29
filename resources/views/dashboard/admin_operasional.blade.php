@@ -1,14 +1,17 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-6 mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-        @foreach($hotels as $hotel)
 
+        @foreach($hotels as $hotel)
             <a href="{{ route('admin.hotels.show', $hotel->id) }}"
-               class="block bg-white rounded-lg shadow hover:shadow-xl transition overflow-hidden">
+                class="block bg-white rounded-lg shadow hover:shadow-xl transition overflow-hidden">
 
                 {{-- GAMBAR HOTEL --}}
-                @if($hotel->gambar)
-                    <img src="{{ asset('storage/'.$hotel->gambar) }}"
-                         class="w-full h-40 object-cover">
+                @php
+                    $gambar = $hotel->images->first();
+                @endphp
+
+                @if($gambar)
+                    <img src="{{ asset('storage/' . $gambar->path) }}" class="w-full h-40 object-cover">
                 @else
                     <div class="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                         Tidak ada gambar
@@ -31,7 +34,7 @@
                 </div>
 
             </a>
-
         @endforeach
+
     </div>
 </x-app-layout>

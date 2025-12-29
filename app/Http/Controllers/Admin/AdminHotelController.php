@@ -100,4 +100,13 @@ class AdminHotelController extends Controller
             ->route('hotels.index')
             ->with('success', 'Hotel berhasil dihapus!');
     }
+
+    public function show(Hotel $hotel)
+    {
+        $hotel->load(['images', 'rooms']);
+
+        return view('admin.hotels.show', compact('hotel'));
+    }
 }
+
+

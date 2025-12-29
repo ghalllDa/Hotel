@@ -95,16 +95,6 @@
                         @foreach ($hotel->images as $img)
                             <div class="relative group">
                                 <img src="{{ asset('storage/' . $img->path) }}" class="w-full h-28 object-cover rounded border">
-
-                                {{-- tombol hapus --}}
-                                <form action="{{ route('hotel-images.destroy', $img) }}" method="POST"
-                                    class="absolute top-1 right-1 hidden group-hover:block">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="bg-red-600 text-white text-xs px-2 py-1 rounded">
-                                        ✕
-                                    </button>
-                                </form>
                             </div>
                         @endforeach
                     </div>

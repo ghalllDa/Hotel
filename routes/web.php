@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HotelController; // USER
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\RoomController;
+use App\Http\Controllers\Admin\HotelImageController;
 
 
 
@@ -68,6 +69,11 @@ Route::middleware(['auth', 'role:admin_operasional'])
             'hotels/{hotel}',
             [AdminHotelController::class, 'show']
         )->name('admin.hotels.show');
+
+        Route::delete(
+            'hotels/images/{image}',
+            [HotelImageController::class, 'destroy']
+        )->name('admin.hotels.images.destroy');
     });
 
 Route::get('/hotels-nearby', [HotelController::class, 'nearby']);
