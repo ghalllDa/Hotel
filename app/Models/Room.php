@@ -10,7 +10,7 @@ class Room extends Model
         'hotel_id',
         'nama_kamar',
         'harga',
-        'foto',
+        'gambar',
         'fasilitas',
         'status',
     ];

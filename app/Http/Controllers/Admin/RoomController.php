@@ -29,17 +29,25 @@ class RoomController extends Controller
             'nama_kamar' => 'required',
             'harga' => 'required|numeric|min:0',
             'status' => 'required',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ✅ TAMBAH
         ]);
 
         $fasilitas = $request->fasilitas
             ? array_map('trim', explode(',', $request->fasilitas))
             : [];
 
+        $gambarPath = null;
+        if ($request->hasFile('gambar')) {
+            $gambarPath = $request->file('gambar')
+                ->store('rooms', 'public');
+        }
+
         $hotel->rooms()->create([
             'nama_kamar' => $request->nama_kamar,
             'harga' => max(0, $request->harga),
             'status' => $request->status,
             'fasilitas' => $fasilitas,
+            'gambar' => $gambarPath, // ✅ SIMPAN
         ]);
 
         return redirect()
@@ -49,7 +57,7 @@ class RoomController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | EDIT KAMAR (FIX SESUAI PERMINTAAN)
+    | EDIT KAMAR
     |--------------------------------------------------------------------------
     */
     public function edit($hotelId, $roomId)
@@ -62,7 +70,7 @@ class RoomController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | UPDATE KAMAR (FIX SESUAI PERMINTAAN)
+    | UPDATE KAMAR
     |--------------------------------------------------------------------------
     */
     public function update(Request $request, $hotelId, $roomId)
@@ -74,7 +82,13 @@ class RoomController extends Controller
             'harga'      => 'required|integer|min:0',
             'status'     => 'required|in:tersedia,Penuh',
             'fasilitas'  => 'nullable|string',
+            'gambar'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ✅ TAMBAH
         ]);
+
+        if ($request->hasFile('gambar')) {
+            $data['gambar'] = $request->file('gambar')
+                ->store('rooms', 'public');
+        }
 
         if (isset($data['fasilitas'])) {
             $data['fasilitas'] = array_map(
@@ -88,16 +102,19 @@ class RoomController extends Controller
         return redirect()
             ->route('admin.hotels.show', $hotelId)
             ->with('success', 'Kamar berhasil diperbarui');
-
     }
 
-    // Hapus kamar
+    /*
+    |--------------------------------------------------------------------------
+    | HAPUS KAMAR
+    |--------------------------------------------------------------------------
+    */
     public function destroy(Hotel $hotel, Room $room)
     {
         $room->delete();
 
         return redirect()
-            ->route('hotels.rooms.index', $hotel->id)
+            ->route('admin.hotels.show', $hotel->id)
             ->with('success', 'Kamar berhasil dihapus');
     }
 }
