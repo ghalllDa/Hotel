@@ -1,53 +1,94 @@
-<x-app-layout>
-    <div class="max-w-7xl mx-auto px-6 py-8">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ $hotel->nama_hotel }}</title>
 
-        <!-- HEADER -->
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold">
-                {{ $hotel->nama_hotel }}
-            </h1>
-            <p class="text-gray-500">
-                {{ $hotel->lokasi }}
-            </p>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .hotel-banner {
+            height: 320px;
+            background-image: url('{{ asset('storage/' . $hotel->gambar) }}');
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .hotel-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            border-radius: 12px;
+        }
+
+        .hotel-info {
+            position: absolute;
+            bottom: 20px;
+            left: 30px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container my-4">
+
+    {{-- BANNER HOTEL --}}
+    <div class="hotel-banner mb-4">
+        <div class="hotel-overlay"></div>
+
+        <div class="hotel-info">
+            <h2 class="mb-1">{{ $hotel->nama_hotel }}</h2>
+            <p class="mb-3">{{ $hotel->lokasi }}</p>
+
+            <a href="{{ route('hotels.rooms.create', $hotel->id) }}"
+               class="btn btn-primary">
+                ➕ Tambah Kamar
+            </a>
         </div>
-
-        <!-- INFO HOTEL -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            <!-- GAMBAR -->
-            <div>
-                @if($hotel->gambar)
-                    <img src="{{ asset('storage/'.$hotel->gambar) }}"
-                         class="w-full h-60 object-cover rounded-lg shadow">
-                @else
-                    <div class="w-full h-60 bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
-                        Tidak ada gambar
-                    </div>
-                @endif
-            </div>
-
-            <!-- DETAIL -->
-            <div class="md:col-span-2 space-y-3">
-                <p>
-                    <strong>Fasilitas:</strong><br>
-                    {{ $hotel->fasilitas }}
-                </p>
-
-                <p>
-                    <strong>Harga mulai:</strong>
-                    Rp {{ number_format($hotel->harga, 0, ',', '.') }} / malam
-                </p>
-
-                <div class="mt-4">
-                    <a href="{{ route('hotels.rooms.create', $hotel->id) }}"
-                       class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                        ➕ Tambah Kamar
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
     </div>
-</x-app-layout>
 
+    {{-- DAFTAR KAMAR --}}
+    <h4 class="mb-3">Daftar Kamar</h4>
+
+    @if ($hotel->rooms->count())
+        <div class="row">
+            @foreach ($hotel->rooms as $room)
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $room->nama_kamar }}</h5>
+
+                            <p class="mb-1">
+                                <strong>Harga:</strong>
+                                Rp {{ number_format($room->harga, 0, ',', '.') }} / malam
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Status:</strong>
+                                <span class="badge bg-{{ $room->status == 'tersedia' ? 'success' : 'secondary' }}">
+                                    {{ ucfirst($room->status) }}
+                                </span>
+                            </p>
+
+                            <p class="mb-0">
+                                <strong>Fasilitas:</strong><br>
+                                {{ is_array($room->fasilitas) ? implode(', ', $room->fasilitas) : '-' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="alert alert-warning">
+            Belum ada kamar untuk hotel ini.
+        </div>
+    @endif
+
+</div>
+
+</body>
+</html>

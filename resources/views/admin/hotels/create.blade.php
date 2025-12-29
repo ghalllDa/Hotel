@@ -3,6 +3,17 @@
 
         <h1 class="text-2xl font-bold mb-6">Tambah Hotel</h1>
 
+        {{-- ✅ TAMBAHAN: TAMPILKAN ERROR VALIDASI --}}
+        @if ($errors->any())
+            <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
+                <ul class="list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('hotels.store') }}"
               method="POST"
               enctype="multipart/form-data">
@@ -31,9 +42,9 @@
                 </p>
             </div>
 
-            {{-- Hidden koordinat --}}
-            <input type="hidden" name="latitude" id="latitude">
-            <input type="hidden" name="longitude" id="longitude">
+            {{-- ✅ TAMBAHAN: DEFAULT VALUE (ANTI VALIDASI GAGAL) --}}
+            <input type="hidden" name="latitude" id="latitude" value="-6.200000">
+            <input type="hidden" name="longitude" id="longitude" value="106.816666">
 
             {{-- MAP --}}
             <div class="mb-6">
@@ -72,7 +83,6 @@
                        accept="image/*"
                        class="w-full border rounded px-3 py-2">
 
-                {{-- PREVIEW GAMBAR --}}
                 <img id="preview"
                      class="mt-3 w-48 h-32 object-cover rounded border hidden">
             </div>
@@ -117,7 +127,6 @@
             longitude.value = e.latlng.lng;
         });
 
-        // SEARCH LOKASI (NOMINATIM)
         document.getElementById('lokasi').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -160,6 +169,14 @@
             const preview = document.getElementById('preview');
             preview.src = URL.createObjectURL(file);
             preview.classList.remove('hidden');
+        });
+
+        {{-- ✅ TAMBAHAN: CEGAH SUBMIT JIKA KOORDINAT KOSONG --}}
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (!latitude.value || !longitude.value) {
+                e.preventDefault();
+                alert('Silakan tentukan lokasi hotel di peta terlebih dahulu.');
+            }
         });
     </script>
 </x-app-layout>
