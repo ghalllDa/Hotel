@@ -7,6 +7,8 @@ use App\Http\Controllers\HotelController; // USER
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\RoomController;
 
+
+
 /*
 |--------------------------------------------------------------------------
 | Landing Page
@@ -35,9 +37,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
-    // USER HOTEL (SEARCH & DETAIL)
-    // Route::get('/hotels/search', [HotelController::class, 'search'])
-    //     ->name('hotels.search');
+    Route::get('/hotels/{id}', [HotelController::class, 'show'])
+        ->name('hotels.show');
 
     // Route::get('/hotels/{hotel}', [HotelController::class, 'show'])
     //     ->name('hotels.show');

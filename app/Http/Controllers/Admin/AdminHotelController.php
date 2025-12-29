@@ -25,11 +25,12 @@ class AdminHotelController extends Controller
         $data = $request->validate([
             'nama_hotel' => 'required|string',
             'lokasi' => 'required|string',
+            'deskripsi' => 'required',
             'latitude' => 'required',
             'longitude' => 'required',
             'harga' => 'required|integer',
             'fasilitas' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'images.*' => 'image|max:2048',
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -50,29 +51,41 @@ class AdminHotelController extends Controller
 
     public function update(Request $request, Hotel $hotel)
     {
-        $data = $request->validate([
-            'nama_hotel' => 'required|string',
-            'lokasi' => 'required|string',
+        $request->validate([
+            'nama_hotel' => 'required',
+            'lokasi' => 'required',
+            'deskripsi' => 'required',
+            'harga' => 'required|numeric',
+            'fasilitas' => 'required',
             'latitude' => 'required',
             'longitude' => 'required',
-            'harga' => 'required|integer',
-            'fasilitas' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'images.*' => 'image|max:2048'
         ]);
 
-        if ($request->hasFile('gambar')) {
-            if ($hotel->gambar) {
-                Storage::disk('public')->delete($hotel->gambar);
+        $hotel->update([
+            'nama_hotel' => $request->nama_hotel,
+            'lokasi' => $request->lokasi,
+            'deskripsi' => $request->deskripsi,
+            'harga' => $request->harga,
+            'fasilitas' => $request->fasilitas,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+        ]);
+
+        // SIMPAN GAMBAR BARU
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('hotels', 'public');
+
+                $hotel->images()->create([
+                    'path' => $path
+                ]);
             }
-
-            $data['gambar'] = $request->file('gambar')->store('hotels', 'public');
         }
-
-        $hotel->update($data);
 
         return redirect()
             ->route('hotels.index')
-            ->with('success', 'Hotel berhasil diperbarui!');
+            ->with('success', 'Hotel berhasil diperbarui');
     }
 
     public function destroy(Hotel $hotel)
@@ -86,38 +99,5 @@ class AdminHotelController extends Controller
         return redirect()
             ->route('hotels.index')
             ->with('success', 'Hotel berhasil dihapus!');
-    }
-
-    public function search(Request $request)
-    {
-        $lat = $request->latitude;
-        $lng = $request->longitude;
-        $radius = 5;
-
-        return Hotel::selectRaw("
-            hotels.*,
-            (6371 * acos(
-                cos(radians(?))
-                * cos(radians(latitude))
-                * cos(radians(longitude) - radians(?))
-                + sin(radians(?))
-                * sin(radians(latitude))
-            )) AS distance
-        ", [$lat, $lng, $lat])
-            ->having('distance', '<=', $radius)
-            ->orderBy('distance')
-            ->get();
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | ✅ TAMBAHAN: DETAIL HOTEL (KLIK CARD)
-    |--------------------------------------------------------------------------
-    */
-    public function show(Hotel $hotel)
-    {
-        $hotel->load('rooms'); 
-        
-        return view('admin.hotels.show', compact('hotel'));
     }
 }
