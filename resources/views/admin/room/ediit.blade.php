@@ -1,87 +1,95 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Kamar</title>
+<x-app-layout>
+    <div class="max-w-3xl mx-auto px-6 py-8">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+        <!-- BUTTON KEMBALI -->
+        <a href="{{ route('admin.hotels.show', $hotel->id) }}"
+           class="inline-flex items-center gap-2 mb-6 px-4 py-2
+                  bg-blue-600 text-white text-sm font-semibold
+                  rounded-lg shadow hover:bg-blue-700 transition">
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="h-4 w-4"
+                 fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M15 19l-7-7 7-7" />
+            </svg>
 
-            <div class="card shadow-sm">
-                <div class="card-header bg-warning">
-                    <h5 class="mb-0">Edit Kamar</h5>
-                    <small>{{ $hotel->nama_hotel }}</small>
+            Kembali ke Detail Hotel
+        </a>
+
+        <!-- CARD FORM -->
+        <div class="bg-white rounded-xl shadow p-6">
+            <h2 class="text-xl font-bold mb-4">
+                Edit Kamar — {{ $hotel->nama_hotel }}
+            </h2>
+
+            <form method="POST"
+                  action="{{ route('hotels.rooms.update', [$hotel->id, $room->id]) }}">
+                @csrf
+                @method('PUT')
+
+                <!-- NAMA KAMAR -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">
+                        Nama Kamar
+                    </label>
+                    <input type="text"
+                           name="nama_kamar"
+                           value="{{ old('nama_kamar', $room->nama_kamar) }}"
+                           class="w-full border rounded px-3 py-2"
+                           required>
                 </div>
 
-                <div class="card-body">
-
-                    <form method="POST"
-                          action="{{ route('admin.hotels.rooms.update', [$hotel->id, $room->id]) }}">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="mb-3">
-                            <label class="form-label">Nama Kamar</label>
-                            <input type="text"
-                                   name="nama_kamar"
-                                   class="form-control"
-                                   value="{{ $room->nama_kamar }}"
-                                   required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Harga</label>
-                            <input type="number"
-                                   name="harga"
-                                   class="form-control"
-                                   value="{{ $room->harga }}"
-                                   min="0"
-                                   required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select name="status" class="form-select">
-                                <option value="tersedia" {{ $room->status == 'tersedia' ? 'selected' : '' }}>
-                                    Tersedia
-                                </option>
-                                <option value="penuh" {{ $room->status == 'penuh' ? 'selected' : '' }}>
-                                    Penuh
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Fasilitas</label>
-                            <textarea name="fasilitas"
-                                      class="form-control"
-                                      rows="3">{{ is_array($room->fasilitas) ? implode(', ', $room->fasilitas) : '' }}</textarea>
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ route('admin.hotels.show', $hotel->id) }}"
-                               class="btn btn-secondary">
-                                Batal
-                            </a>
-
-                            <button class="btn btn-warning">
-                                Update Kamar
-                            </button>
-                        </div>
-
-                    </form>
-
+                <!-- HARGA -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">
+                        Harga per Malam
+                    </label>
+                    <input type="number"
+                           name="harga"
+                           value="{{ old('harga', $room->harga) }}"
+                           class="w-full border rounded px-3 py-2"
+                           required>
                 </div>
-            </div>
 
+                <!-- STATUS -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">
+                        Status
+                    </label>
+                    <select name="status"
+                            class="w-full border rounded px-3 py-2">
+                        <option value="tersedia"
+                            {{ $room->status === 'tersedia' ? 'selected' : '' }}>
+                            Tersedia
+                        </option>
+                        <option value="Penuh"
+                            {{ $room->status === 'penuh' ? 'selected' : '' }}>
+                            Penuh
+                        </option>
+                    </select>
+                </div>
+
+                <!-- FASILITAS -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-1">
+                        Fasilitas (pisahkan dengan koma)
+                    </label>
+                    <input type="text"
+                           name="fasilitas"
+                           value="{{ is_array($room->fasilitas) ? implode(', ', $room->fasilitas) : '' }}"
+                           class="w-full border rounded px-3 py-2"
+                           placeholder="AC, TV, WiFi">
+                </div>
+
+                <!-- BUTTON -->
+                <button type="submit"
+                        class="bg-green-600 hover:bg-green-700
+                               text-white px-5 py-2 rounded-lg font-semibold">
+                    💾 Simpan Perubahan
+                </button>
+            </form>
         </div>
     </div>
-</div>
-
-</body>
-</html>
+</x-app-layout>

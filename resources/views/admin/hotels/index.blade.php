@@ -1,6 +1,28 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow">
 
+       <a href="{{ route('dashboard') }}"
+   class="inline-flex items-center gap-2 mb-6 px-5 py-2.5
+          bg-gradient-to-r from-blue-600 to-blue-500
+          text-white text-sm font-semibold rounded-lg
+          shadow-md hover:shadow-lg
+          hover:from-blue-700 hover:to-blue-600
+          transition duration-200">
+
+    <!-- ICON -->
+    <svg xmlns="http://www.w3.org/2000/svg"
+         class="h-5 w-5"
+         fill="none" viewBox="0 0 24 24"
+         stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15 19l-7-7 7-7" />
+    </svg>
+
+    Kembali ke Dashboard
+</a>
+
+
+
         <h1 class="text-2xl font-bold mb-4">Daftar Hotel</h1>
 
         <a href="{{ route('hotels.create') }}"

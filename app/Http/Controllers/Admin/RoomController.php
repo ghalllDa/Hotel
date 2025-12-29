@@ -31,51 +31,64 @@ class RoomController extends Controller
             'status' => 'required',
         ]);
 
-        // TAMBAHAN: ubah fasilitas string jadi array
         $fasilitas = $request->fasilitas
             ? array_map('trim', explode(',', $request->fasilitas))
             : [];
 
         $hotel->rooms()->create([
             'nama_kamar' => $request->nama_kamar,
-            'harga' => max(0, $request->harga), // TAMBAHAN: anti minus
+            'harga' => max(0, $request->harga),
             'status' => $request->status,
             'fasilitas' => $fasilitas,
         ]);
 
-        // TAMBAHAN: redirect ke halaman detail hotel
         return redirect()
             ->route('admin.hotels.show', $hotel->id)
             ->with('success', 'Kamar berhasil ditambahkan');
     }
 
-    // FORM edit kamar
-    public function edit(Hotel $hotel, Room $room)
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT KAMAR (FIX SESUAI PERMINTAAN)
+    |--------------------------------------------------------------------------
+    */
+    public function edit($hotelId, $roomId)
     {
-        return view('admin.room.edit', compact('hotel', 'room'));
+        $hotel = Hotel::findOrFail($hotelId);
+        $room  = Room::findOrFail($roomId);
+
+        return view('admin.room.ediit', compact('hotel', 'room'));
     }
 
-    // Update data kamar
-    public function update(Request $request, Hotel $hotel, Room $room)
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE KAMAR (FIX SESUAI PERMINTAAN)
+    |--------------------------------------------------------------------------
+    */
+    public function update(Request $request, $hotelId, $roomId)
     {
-        $request->validate([
-            'nama_kamar' => 'required',
-            'harga' => 'required|numeric|min:0',
-            'status' => 'required',
+        $room = Room::findOrFail($roomId);
+
+        $data = $request->validate([
+            'nama_kamar' => 'required|string',
+            'harga'      => 'required|integer|min:0',
+            'status'     => 'required|in:tersedia,Penuh',
+            'fasilitas'  => 'nullable|string',
         ]);
 
-        $room->update([
-            'nama_kamar' => $request->nama_kamar,
-            'harga' => max(0, $request->harga),
-            'status' => $request->status,
-            'fasilitas' => $request->fasilitas
-                ? array_map('trim', explode(',', $request->fasilitas))
-                : [],
-        ]);
+        if (isset($data['fasilitas'])) {
+            $data['fasilitas'] = array_map(
+                'trim',
+                explode(',', $data['fasilitas'])
+            );
+        }
+
+        $room->update($data);
 
         return redirect()
-            ->route('hotels.rooms.index', $hotel->id)
+            ->route('admin.hotels.show', $hotelId)
             ->with('success', 'Kamar berhasil diperbarui');
+
     }
 
     // Hapus kamar

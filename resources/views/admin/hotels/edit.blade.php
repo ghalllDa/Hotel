@@ -1,6 +1,29 @@
 <x-app-layout>
     <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow">
 
+ </a>
+
+    {{-- Kembali ke Daftar Hotel --}}
+    <a href="{{ route('hotels.index') }}"
+       class="inline-flex items-center gap-2
+              bg-blue-600 hover:bg-blue-700
+              text-white font-semibold text-sm
+              px-5 py-2.5 rounded-lg
+              shadow transition">
+
+        <svg xmlns="http://www.w3.org/2000/svg"
+             class="h-5 w-5"
+             fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M15 19l-7-7 7-7"/>
+        </svg>
+
+        Kembali ke Daftar Hotel
+        
+    </a>
+
+
         <h1 class="text-2xl font-bold mb-6">Edit Hotel</h1>
 
         {{-- ERROR VALIDATION --}}
