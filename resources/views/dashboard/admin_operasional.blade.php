@@ -1,7 +1,9 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-6 mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
         @foreach($hotels as $hotel)
-            <div class="bg-white rounded-lg shadow overflow-hidden">
+
+            <a href="{{ route('admin.hotels.show', $hotel->id) }}"
+               class="block bg-white rounded-lg shadow hover:shadow-xl transition overflow-hidden">
 
                 {{-- GAMBAR HOTEL --}}
                 @if($hotel->gambar)
@@ -19,12 +21,17 @@
                         {{ $hotel->nama_hotel }}
                     </h2>
 
+                    <p class="text-sm text-gray-500">
+                        {{ $hotel->lokasi }}
+                    </p>
 
                     <p class="text-sm mt-1">
                         Fasilitas: {{ $hotel->fasilitas }}
                     </p>
                 </div>
-            </div>
+
+            </a>
+
         @endforeach
     </div>
 </x-app-layout>

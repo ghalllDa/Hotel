@@ -36,11 +36,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('profile.destroy');
 
     // USER HOTEL (SEARCH & DETAIL)
-    //Route::get('/hotels/search', [HotelController::class, 'search'])
-        //->name('hotels.search');
+    // Route::get('/hotels/search', [HotelController::class, 'search'])
+    //     ->name('hotels.search');
 
-    //Route::get('/hotels/{hotel}', [HotelController::class, 'show'])
-        //->name('hotels.show');
+    // Route::get('/hotels/{hotel}', [HotelController::class, 'show'])
+    //     ->name('hotels.show');
 });
 
 /*
@@ -52,9 +52,23 @@ Route::middleware(['auth', 'role:admin_operasional'])
     ->prefix('admin-operasional')
     ->group(function () {
 
+        // HOTEL (CRUD + SHOW)
         Route::resource('hotels', AdminHotelController::class);
+
+        // ROOM PER HOTEL
         Route::resource('hotels.rooms', RoomController::class);
+
+        /*
+        |--------------------------------------------------------------------------
+        | 🔹 TAMBAHAN (WAJIB) — DETAIL HOTEL (KLIK CARD)
+        |--------------------------------------------------------------------------
+        */
+        Route::get(
+            'hotels/{hotel}',
+            [AdminHotelController::class, 'show']
+        )->name('admin.hotels.show');
     });
 
 Route::get('/hotels-nearby', [HotelController::class, 'nearby']);
+
 require __DIR__ . '/auth.php';

@@ -95,18 +95,27 @@ class AdminHotelController extends Controller
         $radius = 5;
 
         return Hotel::selectRaw("
-        hotels.*,
-        (6371 * acos(
-            cos(radians(?))
-            * cos(radians(latitude))
-            * cos(radians(longitude) - radians(?))
-            + sin(radians(?))
-            * sin(radians(latitude))
-        )) AS distance
-    ", [$lat, $lng, $lat])
+            hotels.*,
+            (6371 * acos(
+                cos(radians(?))
+                * cos(radians(latitude))
+                * cos(radians(longitude) - radians(?))
+                + sin(radians(?))
+                * sin(radians(latitude))
+            )) AS distance
+        ", [$lat, $lng, $lat])
             ->having('distance', '<=', $radius)
             ->orderBy('distance')
             ->get();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | ✅ TAMBAHAN: DETAIL HOTEL (KLIK CARD)
+    |--------------------------------------------------------------------------
+    */
+    public function show(Hotel $hotel)
+    {
+        return view('admin.hotels.show', compact('hotel'));
+    }
 }
