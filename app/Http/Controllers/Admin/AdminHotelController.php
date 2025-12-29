@@ -11,7 +11,7 @@ class AdminHotelController extends Controller
 {
     public function index()
     {
-        $hotels = Hotel::all();
+        $hotels = Hotel::with('images')->get();
         return view('admin.hotels.index', compact('hotels'));
     }
 
@@ -24,20 +24,36 @@ class AdminHotelController extends Controller
     {
         $data = $request->validate([
             'nama_hotel' => 'required|string',
-            'lokasi' => 'required|string',
-            'deskripsi' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required',
-            'harga' => 'required|integer',
-            'fasilitas' => 'required|string',
-            'images.*' => 'image|max:2048',
+            'lokasi'     => 'required|string',
+            'deskripsi'  => 'required|string',
+            'latitude'   => 'required',
+            'longitude'  => 'required',
+            'harga'      => 'required|integer',
+            'fasilitas'  => 'required|string',
+            'images.*'   => 'image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        if ($request->hasFile('gambar')) {
-            $data['gambar'] = $request->file('gambar')->store('hotels', 'public');
-        }
+        // SIMPAN HOTEL (TANPA GAMBAR)
+        $hotel = Hotel::create([
+            'nama_hotel' => $data['nama_hotel'],
+            'lokasi'     => $data['lokasi'],
+            'deskripsi'  => $data['deskripsi'],
+            'latitude'   => $data['latitude'],
+            'longitude'  => $data['longitude'],
+            'harga'      => $data['harga'],
+            'fasilitas'  => $data['fasilitas'],
+        ]);
 
-        Hotel::create($data);
+        // SIMPAN MULTI IMAGE
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('hotels', 'public');
+
+                $hotel->images()->create([
+                    'path' => $path
+                ]);
+            }
+        }
 
         return redirect()
             ->route('hotels.index')
@@ -46,33 +62,35 @@ class AdminHotelController extends Controller
 
     public function edit(Hotel $hotel)
     {
+        $hotel->load('images');
         return view('admin.hotels.edit', compact('hotel'));
     }
 
     public function update(Request $request, Hotel $hotel)
     {
         $request->validate([
-            'nama_hotel' => 'required',
-            'lokasi' => 'required',
-            'deskripsi' => 'required',
-            'harga' => 'required|numeric',
-            'fasilitas' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required',
-            'images.*' => 'image|max:2048'
+            'nama_hotel' => 'required|string',
+            'lokasi'     => 'required|string',
+            'deskripsi'  => 'required|string',
+            'harga'      => 'required|numeric',
+            'fasilitas'  => 'required|string',
+            'latitude'   => 'required',
+            'longitude'  => 'required',
+            'images.*'   => 'image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
+        // UPDATE DATA HOTEL
         $hotel->update([
             'nama_hotel' => $request->nama_hotel,
-            'lokasi' => $request->lokasi,
-            'deskripsi' => $request->deskripsi,
-            'harga' => $request->harga,
-            'fasilitas' => $request->fasilitas,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
+            'lokasi'     => $request->lokasi,
+            'deskripsi'  => $request->deskripsi,
+            'harga'      => $request->harga,
+            'fasilitas'  => $request->fasilitas,
+            'latitude'   => $request->latitude,
+            'longitude'  => $request->longitude,
         ]);
 
-        // SIMPAN GAMBAR BARU
+        // TAMBAH GAMBAR BARU (TIDAK HAPUS YANG LAMA)
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('hotels', 'public');
@@ -90,8 +108,10 @@ class AdminHotelController extends Controller
 
     public function destroy(Hotel $hotel)
     {
-        if ($hotel->gambar) {
-            Storage::disk('public')->delete($hotel->gambar);
+        // HAPUS SEMUA GAMBAR
+        foreach ($hotel->images as $img) {
+            Storage::disk('public')->delete($img->path);
+            $img->delete();
         }
 
         $hotel->delete();
@@ -104,9 +124,6 @@ class AdminHotelController extends Controller
     public function show(Hotel $hotel)
     {
         $hotel->load(['images', 'rooms']);
-
         return view('admin.hotels.show', compact('hotel'));
     }
 }
-
-
