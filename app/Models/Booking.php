@@ -10,18 +10,9 @@ class Booking extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'room_id',
-        'check_in',
-        'check_out',
-        'total_harga',
-        'status',
+        'room_id', 'check_in', 'check_out', 'jumlah_tamu', 'nama_pemesan',
+        'no_hp', 'catatan', 'total_harga', 'status', 'transaction_id'
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function room()
     {

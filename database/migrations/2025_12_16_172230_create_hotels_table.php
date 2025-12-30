@@ -15,6 +15,7 @@ return new class extends Migration
         $table->id();
         $table->string('nama_hotel');
         $table->string('lokasi');
+        $table->text('deskripsi');
         $table->integer('harga');
         $table->string('gambar')->nullable();
         $table->string('fasilitas'); // contoh: WiFi,AC,Parkir

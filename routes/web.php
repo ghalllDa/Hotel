@@ -43,8 +43,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('hotels.show');
 
     // BOOKING KAMAR
-    Route::get('/booking/{room}', [BookingController::class, 'create'])
-        ->name('booking.create');
+    Route::get('/booking/form/{room}', [BookingController::class, 'form'])->name('booking.form');
+    Route::post('/booking/create-payment', [BookingController::class, 'createPayment'])->name('booking.createPayment');
+    // Webhook untuk Midtrans notification (wajib CSRF exempt atau gunakan api route)
+    Route::post('/midtrans/notification', [BookingController::class, 'handleNotification'])->name('midtrans.notification');
+    Route::get('/payment-success', [BookingController::class, 'paymentSuccess'])->name('payment.success');
 });
 
 /*

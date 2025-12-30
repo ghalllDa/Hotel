@@ -146,7 +146,7 @@
 
                                                 <p class="text-xs text-gray-500">/ malam</p>
 
-                                                <a href="{{ route('booking.create', $room->id) }}"
+                                                <a href="{{ route('booking.form', $room->id) }}"
                                                    class="mt-2 inline-block bg-blue-600 hover:bg-blue-700
                                                           text-white px-4 py-2 rounded-lg font-semibold">
                                                     Pilih Kamar

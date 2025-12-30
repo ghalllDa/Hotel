@@ -7,21 +7,30 @@
         </h1>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
+        @if ($errors->any())
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+        <ul class="list-disc list-inside">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
             <!-- FORM BOOKING -->
             <div class="md:col-span-2 bg-white rounded-lg shadow p-6">
                 <h2 class="text-lg font-bold mb-4">Detail Pemesanan</h2>
 
-                <form action="#" method="POST" class="space-y-4">
+                <form action="{{ route('booking.createPayment') }}" method="POST" class="space-y-4">
                     @csrf
+                    <input type="hidden" name="room_id" value="{{ $room->id }}">
 
                     <!-- CHECK IN -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">
                             Tanggal Check-in
                         </label>
-                        <input type="date" name="check_in"
-                               class="w-full mt-1 border rounded-lg px-3 py-2">
+                        <input type="date" name="check_in" class="w-full mt-1 border rounded-lg px-3 py-2" required
+                            min="{{ date('Y-m-d') }}">
                     </div>
 
                     <!-- CHECK OUT -->
@@ -29,8 +38,8 @@
                         <label class="block text-sm font-semibold text-gray-700">
                             Tanggal Check-out
                         </label>
-                        <input type="date" name="check_out"
-                               class="w-full mt-1 border rounded-lg px-3 py-2">
+                        <input type="date" name="check_out" class="w-full mt-1 border rounded-lg px-3 py-2" required
+                            min="{{ date('Y-m-d', strtotime('+1 day')) }}">
                     </div>
 
                     <!-- JUMLAH TAMU -->
@@ -38,8 +47,8 @@
                         <label class="block text-sm font-semibold text-gray-700">
                             Jumlah Tamu
                         </label>
-                        <input type="number" name="jumlah_tamu" min="1"
-                               class="w-full mt-1 border rounded-lg px-3 py-2">
+                        <input type="number" name="jumlah_tamu" min="1" class="w-full mt-1 border rounded-lg px-3 py-2"
+                            required>
                     </div>
 
                     <!-- NAMA PEMESAN -->
@@ -47,8 +56,7 @@
                         <label class="block text-sm font-semibold text-gray-700">
                             Nama Pemesan
                         </label>
-                        <input type="text" name="nama_pemesan"
-                               class="w-full mt-1 border rounded-lg px-3 py-2">
+                        <input type="text" name="nama_pemesan" class="w-full mt-1 border rounded-lg px-3 py-2" required>
                     </div>
 
                     <!-- NO HP -->
@@ -56,8 +64,7 @@
                         <label class="block text-sm font-semibold text-gray-700">
                             No. HP
                         </label>
-                        <input type="text" name="no_hp"
-                               class="w-full mt-1 border rounded-lg px-3 py-2">
+                        <input type="text" name="no_hp" class="w-full mt-1 border rounded-lg px-3 py-2" required>
                     </div>
 
                     <!-- CATATAN -->
@@ -65,14 +72,13 @@
                         <label class="block text-sm font-semibold text-gray-700">
                             Catatan (opsional)
                         </label>
-                        <textarea name="catatan"
-                                  class="w-full mt-1 border rounded-lg px-3 py-2"></textarea>
+                        <textarea name="catatan" class="w-full mt-1 border rounded-lg px-3 py-2"></textarea>
                     </div>
 
                     <!-- SUBMIT -->
                     <button type="submit"
-                            class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-bold transition">
-                        Konfirmasi Booking
+                        class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-bold transition">
+                        Konfirmasi & Lanjut ke Pembayaran
                     </button>
                 </form>
             </div>
@@ -84,11 +90,9 @@
                 <!-- FOTO KAMAR -->
                 <div class="w-full h-40 mb-4">
                     @if ($room->foto)
-                        <img src="{{ asset('storage/' . $room->foto) }}"
-                             class="w-full h-full object-cover rounded-lg">
+                        <img src="{{ asset('storage/' . $room->foto) }}" class="w-full h-full object-cover rounded-lg">
                     @else
-                        <img src="/img/no-image.png"
-                             class="w-full h-full object-cover rounded-lg">
+                        <img src="/img/no-image.png" class="w-full h-full object-cover rounded-lg">
                     @endif
                 </div>
 
