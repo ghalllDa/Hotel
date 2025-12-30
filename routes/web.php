@@ -32,6 +32,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
+    // routes/web.php (di dalam middleware auth)
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])
+        ->name('profile.photo.update');
+
     Route::patch('/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
 
@@ -46,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/booking/form/{room}', [BookingController::class, 'form'])->name('booking.form');
     Route::post('/booking/create-payment', [BookingController::class, 'createPayment'])->name('booking.createPayment');
     Route::post('/midtrans/notification', [BookingController::class, 'handleNotification'])->name('midtrans.notification');
-    Route::get('/payment-success', [BookingController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/booking/success', [BookingController::class, 'paymentSuccess'])->name('booking.success');
 });
 
 /*

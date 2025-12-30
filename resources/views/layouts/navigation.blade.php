@@ -9,7 +9,6 @@
                         <button
                             @click="sidebarOpen = true"
                             class="p-2 rounded-md text-blue-700 hover:bg-blue-100 focus:outline-none">
-                            <!-- ICON HAMBURGER -->
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-width="2"
                                       d="M4 6h16M4 12h16M4 18h16"/>
@@ -28,8 +27,19 @@
                 @auth
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <button class="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-800">
-                                {{ auth()->user()->name }}
+                            <!-- 🔽 SATU-SATUNYA BAGIAN YANG DIUBAH -->
+                            <button class="flex items-center gap-3 text-sm font-medium text-gray-600 hover:text-gray-800">
+
+                                <img
+                                    class="h-8 w-8 rounded-full object-cover border"
+                                    src="{{ auth()->user()->profile_photo
+                                        ? asset('storage/' . auth()->user()->profile_photo)
+                                        : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
+                                    alt="{{ auth()->user()->name }}"
+                                >
+
+                                <span>{{ auth()->user()->name }}</span>
+
                                 <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                           d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
@@ -44,7 +54,8 @@
 
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <x-dropdown-link :href="route('logout')"
+                                <x-dropdown-link
+                                    :href="route('logout')"
                                     onclick="event.preventDefault(); this.closest('form').submit();">
                                     Logout
                                 </x-dropdown-link>
@@ -89,7 +100,6 @@
         <!-- MENU -->
         <div class="p-4 space-y-4 text-sm">
 
-            <!-- KELOLA HOTEL -->
             <div>
                 <p class="font-semibold text-gray-700 mb-2">Kelola Hotel</p>
                 <ul class="space-y-2 ml-2">
@@ -99,12 +109,9 @@
                         </a>
                     </li>
                     <li>
-                        
-    <a href="{{ route('promo.index') }}"
-       class="block hover:text-blue-600">
-        💸 Promo Kamar
-    </a>
-
+                        <a href="{{ route('promo.index') }}" class="block hover:text-blue-600">
+                            💸 Promo Kamar
+                        </a>
                     </li>
                     <li>
                         <a href="#" class="block hover:text-blue-600">
@@ -119,7 +126,6 @@
                 </ul>
             </div>
 
-            <!-- PEMESANAN -->
             <div>
                 <p class="font-semibold text-gray-700 mb-2">Manajemen Pemesanan</p>
                 <ul class="space-y-2 ml-2">
@@ -130,7 +136,6 @@
                 </ul>
             </div>
 
-            <!-- KONTEN -->
             <div>
                 <p class="font-semibold text-gray-700 mb-2">Konten</p>
                 <ul class="space-y-2 ml-2">
