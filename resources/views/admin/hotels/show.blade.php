@@ -34,6 +34,10 @@
 
             <div class="absolute bottom-6 left-6 text-white">
                 <h2 class="text-2xl font-bold">{{ $hotel->nama_hotel }}</h2>
+                <div class="text-yellow-400 text-lg mb-1">
+                    {{ str_repeat('⭐', $hotel->stars) }} 
+                </div>
+
                 <p class="mb-4">{{ $hotel->lokasi }}</p>
 
                 <a href="{{ route('hotels.rooms.create', $hotel->id) }}" class="inline-flex items-center gap-2

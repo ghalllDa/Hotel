@@ -88,6 +88,17 @@
                 </p>
             </div>
 
+            {{-- ⭐ Bintang Hotel --}}
+<div class="mb-4">
+    <label class="block font-medium mb-1">Bintang Hotel</label>
+    <select name="stars" class="w-full border rounded px-3 py-2" required>
+        @for ($i = 1; $i <= 5; $i++)
+            <option value="{{ $i }}">{{ $i }} ⭐</option>
+        @endfor
+    </select>
+</div>
+
+
             {{-- Fasilitas --}}
             <div class="mb-4">
                 <label class="block font-medium mb-1">Fasilitas</label>

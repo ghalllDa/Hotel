@@ -29,6 +29,7 @@
             <thead class="bg-blue-100">
                 <tr>
                     <th class="border px-4 py-2">Nama Hotel</th>
+                    <th class="border px-4 py-2">Bintang</th>
                     <th class="border px-4 py-2">Lokasi</th>
                     <th class="border px-4 py-2">Harga</th>
                     <th class="border px-4 py-2">Fasilitas</th>
@@ -40,6 +41,8 @@
                 @foreach($hotels as $hotel)
                     <tr>
                         <td class="border px-4 py-2">{{ $hotel->nama_hotel }}</td>
+                        <td class="border px-4 py-2 text-yellow-500">
+                            {{ str_repeat('⭐', $hotel->stars) }}</td>
                         <td class="border px-4 py-2">{{ $hotel->lokasi }}</td>
 
                         {{-- HARGA FIX --}}
