@@ -22,6 +22,7 @@
                     <th class="p-3 text-left">Kamar</th>
                     <th class="p-3 text-center">Diskon</th>
                     <th class="p-3 text-center">Periode</th>
+                    <th class="p-3 text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,10 +43,29 @@
                         {{ $promo->tanggal_mulai }}<br>
                         {{ $promo->tanggal_selesai }}
                     </td>
+
+                    <!-- ⬇️ AKSI -->
+                    <td class="p-3 text-center space-x-2">
+                        <a href="{{ route('promo.edit', $promo->id) }}"
+                           class="px-3 py-1 text-xs bg-yellow-500 text-white rounded">
+                            Edit
+                        </a>
+
+                        <form action="{{ route('promo.destroy', $promo->id) }}"
+                              method="POST"
+                              class="inline"
+                              onsubmit="return confirm('Hapus promo ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button class="px-3 py-1 text-xs bg-red-600 text-white rounded">
+                                Hapus
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" class="p-6 text-center text-gray-500">
+                    <td colspan="5" class="p-6 text-center text-gray-500">
                         Belum ada promo
                     </td>
                 </tr>

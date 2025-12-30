@@ -1,80 +1,162 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow">
+    <div class="bg-gray-100 min-h-screen">
+        <div class="max-w-7xl mx-auto px-6 py-8">
 
-        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 mb-6 px-5 py-2.5
-          bg-gradient-to-r from-blue-600 to-blue-500
-          text-white text-sm font-semibold rounded-lg
-          shadow-md hover:shadow-lg
-          hover:from-blue-700 hover:to-blue-600
-          transition duration-200">
+            {{-- HEADER (FIX FINAL, TIDAK JELEK) --}}
+            <div class="mb-8">
+                <a href="{{ route('dashboard') }}"
+                   class="inline-flex items-center gap-2 text-sm text-gray-500
+                          hover:text-gray-700 mb-4">
+                    ← Dashboard
+                </a>
 
-            <!-- ICON -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        {{-- ICON --}}
+                        <div class="w-12 h-12 rounded-xl bg-blue-100
+                                    flex items-center justify-center
+                                    text-blue-600 text-xl">
+                            🏨
+                        </div>
 
-            Kembali ke Dashboard
-        </a>
+                        {{-- TITLE --}}
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-2xl font-bold text-gray-900">
+                                    Daftar Hotel
+                                </h1>
+                                <span class="px-2.5 py-0.5 rounded-full
+                                             text-xs font-semibold
+                                             bg-blue-50 text-blue-600">
+                                    Admin
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-500">
+                                Kelola hotel yang terdaftar
+                            </p>
+                        </div>
+                    </div>
 
+                    {{-- BUTTON --}}
+                    <a href="{{ route('hotels.create') }}"
+                       class="inline-flex items-center gap-2
+                              px-5 py-2.5 rounded-xl
+                              bg-blue-600 text-white font-semibold
+                              hover:bg-blue-700 transition shadow-md">
+                        + Tambah Hotel
+                    </a>
+                </div>
 
+                {{-- DIVIDER --}}
+                <div class="mt-6 h-px bg-gradient-to-r
+                            from-transparent via-gray-300 to-transparent"></div>
+            </div>
 
-        <h1 class="text-2xl font-bold mb-4">Daftar Hotel</h1>
+            {{-- TABLE CARD --}}
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
 
-        <a href="{{ route('hotels.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block">
-            Tambah Hotel
-        </a>
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-50 text-gray-500 uppercase text-xs tracking-wider">
+                        <tr>
+                            <th class="px-6 py-4 text-left">Hotel</th>
+                            <th class="px-6 py-4 text-left">Bintang</th>
+                            <th class="px-6 py-4 text-left">Lokasi</th>
+                            <th class="px-6 py-4 text-left">Harga</th>
+                            <th class="px-6 py-4 text-left">Fasilitas</th>
+                            <th class="px-6 py-4 text-center">Gambar</th>
+                            <th class="px-6 py-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
 
-        <table class="w-full table-auto border">
-            <thead class="bg-blue-100">
-                <tr>
-                    <th class="border px-4 py-2">Nama Hotel</th>
-                    <th class="border px-4 py-2">Bintang</th>
-                    <th class="border px-4 py-2">Lokasi</th>
-                    <th class="border px-4 py-2">Harga</th>
-                    <th class="border px-4 py-2">Fasilitas</th>
-                    <th class="border px-4 py-2">Gambar</th>
-                    <th class="border px-4 py-2">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($hotels as $hotel)
-                    <tr>
-                        <td class="border px-4 py-2">{{ $hotel->nama_hotel }}</td>
-                        <td class="border px-4 py-2 text-yellow-500">
-                            {{ str_repeat('⭐', $hotel->stars) }}</td>
-                        <td class="border px-4 py-2">{{ $hotel->lokasi }}</td>
+                    <tbody class="divide-y">
+                        @foreach($hotels as $hotel)
+                            @php
+                                $bintang = (int) ($hotel->stars ?? 0);
+                                $gambar  = $hotel->images->first();
+                            @endphp
 
-                        {{-- HARGA FIX --}}
-                        <td class="border px-4 py-2">
-                            Rp {{ number_format($hotel->harga, 0, ',', '.') }}
-                        </td>
+                            <tr class="hover:bg-blue-50/40 transition">
 
-                        <td class="border px-4 py-2">{{ $hotel->fasilitas }}</td>
-                        <td class="border px-4 py-2">
-                            @if ($hotel->images->count())
-                                <img src="{{ asset('storage/' . $hotel->images->first()->path) }}"
-                                    class="w-20 h-20 object-cover rounded">
-                            @else
-                                <div
-                                    class="w-20 h-20 bg-gray-200 flex items-center justify-center text-xs text-gray-500 rounded">
-                                    No Image
-                                </div>
-                            @endif
-                        </td>
-                        <td class="border px-4 py-2">
-                            <a href="{{ route('hotels.edit', $hotel) }}" class="text-blue-600">Edit</a>
-                            <form action="{{ route('hotels.destroy', $hotel) }}" method="POST" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600" onclick="return confirm('Yakin mau dihapus?')">
-                                    Hapus
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                                {{-- HOTEL --}}
+                                <td class="px-6 py-5">
+                                    <div class="font-semibold text-gray-900">
+                                        {{ $hotel->nama_hotel }}
+                                    </div>
+                                    <div class="text-xs text-gray-400">
+                                        ID #{{ $hotel->id }}
+                                    </div>
+                                </td>
+
+                                {{-- BINTANG --}}
+                                <td class="px-6 py-5 text-yellow-500 text-base">
+                                    @for ($i = 1; $i <= $bintang; $i++)
+                                        ★
+                                    @endfor
+                                </td>
+
+                                {{-- LOKASI --}}
+                                <td class="px-6 py-5 text-gray-700">
+                                    {{ ucfirst($hotel->lokasi) }}
+                                </td>
+
+                                {{-- HARGA --}}
+                                <td class="px-6 py-5 font-bold text-gray-900">
+                                    Rp {{ number_format($hotel->harga, 0, ',', '.') }}
+                                </td>
+
+                                {{-- FASILITAS --}}
+                                <td class="px-6 py-5">
+                                    <span class="px-3 py-1 rounded-full
+                                                 bg-orange-100 text-orange-700
+                                                 text-xs font-semibold">
+                                        {{ $hotel->fasilitas }}
+                                    </span>
+                                </td>
+
+                                {{-- GAMBAR --}}
+                                <td class="px-6 py-5 text-center">
+                                    @if($gambar)
+                                        <img src="{{ asset('storage/'.$gambar->path) }}"
+                                             class="w-20 h-14 object-cover
+                                                    rounded-xl shadow-md mx-auto">
+                                    @else
+                                        <span class="text-xs text-gray-400 italic">
+                                            No Image
+                                        </span>
+                                    @endif
+                                </td>
+
+                                {{-- AKSI --}}
+                                <td class="px-6 py-5 text-center">
+                                    <div class="flex justify-center gap-3">
+                                        <a href="{{ route('hotels.edit', $hotel->id) }}"
+                                           class="px-4 py-2 rounded-lg
+                                                  bg-blue-100 text-blue-700
+                                                  font-semibold hover:bg-blue-200 transition">
+                                            Edit
+                                        </a>
+
+                                        <form action="{{ route('hotels.destroy', $hotel->id) }}"
+                                              method="POST"
+                                              onsubmit="return confirm('Yakin hapus hotel ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="px-4 py-2 rounded-lg
+                                                           bg-red-100 text-red-700
+                                                           font-semibold hover:bg-red-200 transition">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
     </div>
 </x-app-layout>

@@ -93,6 +93,10 @@ Route::middleware(['auth', 'role:admin_operasional'])
 
         Route::post('/promo', [PromoController::class, 'store'])
             ->name('promo.store');
+
+         Route::get('/promo/{promo}/edit', [PromoController::class, 'edit'])->name('promo.edit');
+        Route::put('/promo/{promo}', [PromoController::class, 'update'])->name('promo.update');
+        Route::delete('/promo/{promo}', [PromoController::class, 'destroy'])->name('promo.destroy');
     });
 
 /*

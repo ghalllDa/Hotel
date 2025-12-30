@@ -13,28 +13,36 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Ambil user saat ini
         $user = Auth::user();
         $role = $user->role;
 
-        // ⬇️ FIX: ambil hotel + gambar + hanya kamar tersedia
-        $hotels = Hotel::with([
-                'images',
-                'rooms' => function ($q) {
+        // ===============================
+        // USER → hanya hotel yg punya kamar tersedia
+        // ===============================
+        if ($role === 'user') {
+            $hotels = Hotel::with([
+                    'images',
+                    'rooms' => function ($q) {
+                        $q->where('status', 'tersedia');
+                    }
+                ])
+                ->whereHas('rooms', function ($q) {
                     $q->where('status', 'tersedia');
-                }
-            ])
-            ->whereHas('rooms', function ($q) {
-                $q->where('status', 'tersedia');
-            })
-            ->get();
+                })
+                ->get();
 
-        // Pilih view berdasarkan role (TIDAK DIUBAH)
-        return match ($role) {
-            'user' => view('dashboard.user', compact('hotels')),
-            'admin_operasional' => view('dashboard.admin_operasional', compact('hotels')),
-            'admin_konten' => view('dashboard.admin_konten', compact('hotels')),
-            default => abort(403),
-        };
+            return view('dashboard.user', compact('hotels'));
+        }
+
+        // ===============================
+        // ADMIN → tampilkan SEMUA hotel
+        // ===============================
+        if (in_array($role, ['admin_operasional', 'admin_konten'])) {
+            $hotels = Hotel::with('images')->get();
+
+            return view("dashboard.$role", compact('hotels'));
+        }
+
+        abort(403);
     }
 }
