@@ -130,4 +130,5 @@ function promoForm(hotels) {
 }
 </script>
 
+
 </x-app-layout>
