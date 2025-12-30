@@ -80,6 +80,11 @@
                             </span>
                         </p>
 
+                        <p class="text-sm mt-1">
+    <strong>Kapasitas:</strong>
+    👤 {{ $room->capacity }} Orang
+</p>
+
                         <p class="text-sm mt-2">
                             <strong>Fasilitas:</strong><br>
                             {{ is_array($room->fasilitas) ? implode(', ', $room->fasilitas) : '-' }}

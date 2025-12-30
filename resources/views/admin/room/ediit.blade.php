@@ -53,6 +53,20 @@
                            required>
                 </div>
 
+                {{-- KAPASITAS ORANG --}}
+<div class="mb-4">
+    <label class="block text-sm font-medium mb-1">
+        Kapasitas Orang
+    </label>
+    <input type="number"
+           name="capacity"
+           value="{{ old('capacity', $room->capacity) }}"
+           class="w-full border rounded px-3 py-2"
+           min="1"
+           required>
+</div>
+
+
                 <!-- STATUS -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">

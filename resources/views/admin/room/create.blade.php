@@ -51,6 +51,18 @@
                                    placeholder="Contoh: 500000" min="0" required>
                         </div>
 
+                        {{-- KAPASITAS ORANG --}}
+<div class="mb-3">
+    <label class="form-label">Kapasitas Orang</label>
+    <input type="number"
+           name="capacity"
+           class="form-control"
+           value="{{ old('capacity') }}"
+           placeholder="Contoh: 2"
+           min="1"
+           required>
+</div>
+
                         <div class="mb-3">
                             <label class="form-label">Status</label>
                             <select name="status" class="form-select" required>

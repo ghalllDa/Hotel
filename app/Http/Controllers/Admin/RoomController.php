@@ -27,9 +27,10 @@ class RoomController extends Controller
     {
         $request->validate([
             'nama_kamar' => 'required',
-            'harga' => 'required|numeric|min:0',
-            'status' => 'required',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ✅ TAMBAH
+            'harga'      => 'required|numeric|min:0',
+            'capacity'   => 'required|integer|min:1', // ✅ TAMBAH
+            'status'     => 'required',
+            'gambar'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $fasilitas = $request->fasilitas
@@ -44,10 +45,11 @@ class RoomController extends Controller
 
         $hotel->rooms()->create([
             'nama_kamar' => $request->nama_kamar,
-            'harga' => max(0, $request->harga),
-            'status' => $request->status,
-            'fasilitas' => $fasilitas,
-            'gambar' => $gambarPath, // ✅ SIMPAN
+            'harga'      => max(0, $request->harga),
+            'capacity'   => $request->capacity, // ✅ TAMBAH
+            'status'     => $request->status,
+            'fasilitas'  => $fasilitas,
+            'gambar'     => $gambarPath,
         ]);
 
         return redirect()
@@ -80,9 +82,10 @@ class RoomController extends Controller
         $data = $request->validate([
             'nama_kamar' => 'required|string',
             'harga'      => 'required|integer|min:0',
-            'status'     => 'required|in:tersedia,Penuh',
+            'capacity'   => 'required|integer|min:1', // ✅ TAMBAH
+            'status'     => 'required|in:tersedia,penuh', // ✅ KONSISTEN
             'fasilitas'  => 'nullable|string',
-            'gambar'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ✅ TAMBAH
+            'gambar'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($request->hasFile('gambar')) {

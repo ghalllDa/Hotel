@@ -10,6 +10,7 @@ class Room extends Model
         'hotel_id',
         'nama_kamar',
         'harga',
+        'capacity', 
         'gambar',
         'fasilitas',
         'status',
@@ -30,9 +31,7 @@ class Room extends Model
     }
 
     public function promos()
-{
-    return $this->hasMany(Promo::class);
-}
-
-
+    {
+        return $this->hasMany(Promo::class);
+    }
 }
