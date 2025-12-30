@@ -43,7 +43,6 @@
                     {{-- hotel akan muncul via JS --}}
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -64,38 +63,18 @@
             const inputGuests = document.querySelector('input[type=number]');
             const btnCari = document.getElementById('btnCari');
 
-            // ambil lokasi user saat load awal
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-
-                    window.map.setView([lat, lng], 14);
-                    L.marker([lat, lng]).addTo(window.map).bindPopup("Lokasi Anda").openPopup();
-
-                    loadHotels(lat, lng); // load awal
-                });
-            }
-
-            // tombol cari
-            btnCari.addEventListener('click', function() {
-                const center = window.map.getCenter();
+            function loadHotels(lat = null, lng = null, keyword = '', checkin = '', checkout = '', guests = '') {
                 const params = new URLSearchParams();
-                params.append('lat', center.lat);
-                params.append('lng', center.lng);
+                if (lat !== null && lng !== null) {
+                    params.append('lat', lat);
+                    params.append('lng', lng);
+                }
+                if (keyword) params.append('q', keyword);
+                if (checkin) params.append('checkin', checkin);
+                if (checkout) params.append('checkout', checkout);
+                if (guests) params.append('guests', guests);
 
-                if (inputNama.value) params.append('q', inputNama.value);
-                if (inputCheckin.value) params.append('checkin', inputCheckin.value);
-                if (inputCheckout.value) params.append('checkout', inputCheckout.value);
-                if (inputGuests.value) params.append('guests', inputGuests.value);
-
-                loadHotels(center.lat, center.lng, params.toString());
-            });
-
-            function loadHotels(lat, lng, queryParams = '') {
-                const url = queryParams ? `/hotels-nearby?${queryParams}` : `/hotels-nearby?lat=${lat}&lng=${lng}`;
-
-                fetch(url)
+                fetch(`/hotels-nearby?${params.toString()}`)
                     .then(res => res.json())
                     .then(data => {
                         // hapus marker lama
@@ -106,7 +85,7 @@
                         const list = document.getElementById('hotel-list');
                         list.innerHTML = '';
 
-                        if (data.length === 0) {
+                        if (!data || data.length === 0) {
                             list.innerHTML = `<p class="text-gray-500">Hotel tidak ditemukan</p>`;
                             return;
                         }
@@ -116,6 +95,7 @@
                             const marker = L.marker([hotel.latitude, hotel.longitude])
                                 .addTo(window.map)
                                 .bindPopup(`<strong>${hotel.nama_hotel}</strong><br>
+                                    ${hotel.lokasi}<br>
                                     Mulai dari Rp ${Number(hotel.harga).toLocaleString('id-ID')}<br>
                                     <a href="/hotels/${hotel.id}">Detail</a>`);
                             window.markers.push(marker);
@@ -140,10 +120,41 @@
                                     </div>
                                 </div>`;
                         });
+
+                        // fokus map ke hotel pertama
+                        if (data[0]) {
+                            window.map.setView([data[0].latitude, data[0].longitude], 13);
+                        }
                     })
                     .catch(err => console.error('API ERROR:', err));
             }
 
+            // Load awal (jika geolocation tersedia)
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    window.map.setView([lat, lng], 13);
+                    L.marker([lat, lng]).addTo(window.map).bindPopup("Lokasi Anda").openPopup();
+
+                    loadHotels(lat, lng); // load awal
+                }, () => {
+                    loadHotels(); // fallback tanpa posisi
+                });
+            } else {
+                loadHotels(); // load awal tanpa posisi
+            }
+
+            // tombol cari
+            btnCari.addEventListener('click', function() {
+                const keyword = inputNama.value;
+                const checkin = inputCheckin.value;
+                const checkout = inputCheckout.value;
+                const guests = inputGuests.value;
+                const center = window.map.getCenter();
+
+                loadHotels(center.lat, center.lng, keyword, checkin, checkout, guests);
+            });
         });
     </script>
 </x-app-layout>

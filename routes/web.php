@@ -45,7 +45,6 @@ Route::middleware(['auth'])->group(function () {
     // BOOKING KAMAR
     Route::get('/booking/form/{room}', [BookingController::class, 'form'])->name('booking.form');
     Route::post('/booking/create-payment', [BookingController::class, 'createPayment'])->name('booking.createPayment');
-    // Webhook untuk Midtrans notification (wajib CSRF exempt atau gunakan api route)
     Route::post('/midtrans/notification', [BookingController::class, 'handleNotification'])->name('midtrans.notification');
     Route::get('/payment-success', [BookingController::class, 'paymentSuccess'])->name('payment.success');
 });
@@ -66,27 +65,22 @@ Route::middleware(['auth', 'role:admin_operasional'])
         Route::resource('hotels.rooms', RoomController::class);
 
         // DETAIL HOTEL (ADMIN)
-        Route::get(
-            'hotels/{hotel}',
-            [AdminHotelController::class, 'show']
-        )->name('admin.hotels.show');
+        Route::get('hotels/{hotel}', [AdminHotelController::class, 'show'])
+            ->name('admin.hotels.show');
 
         // HAPUS FOTO HOTEL
-        Route::delete(
-            'hotels/images/{image}',
-            [HotelImageController::class, 'destroy']
-        )->name('admin.hotels.images.destroy');
+        Route::delete('hotels/images/{image}', [HotelImageController::class, 'destroy'])
+            ->name('admin.hotels.images.destroy');
     });
 
 /*
 |--------------------------------------------------------------------------
-| Promo Kamar (ADMIN OPERASIONAL)  ✅ FIX DI SINI
+| Promo Kamar (ADMIN OPERASIONAL)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:admin_operasional'])
     ->prefix('admin')
     ->group(function () {
-
         Route::get('/promo', [PromoController::class, 'index'])
             ->name('promo.index');
 
@@ -97,8 +91,16 @@ Route::middleware(['auth', 'role:admin_operasional'])
             ->name('promo.store');
     });
 
+/*
+|--------------------------------------------------------------------------
+| Hotel Terdekat / Search
+|--------------------------------------------------------------------------
+*/
+Route::get('/hotels', function() {
+    return view('penginapan.index');
+})->name('hotels.index');
 
-// HOTEL TERDEKAT
 Route::get('/hotels-nearby', [HotelController::class, 'nearby']);
+Route::get('/hotels/{id}', [HotelController::class, 'show']);
 
 require __DIR__ . '/auth.php';

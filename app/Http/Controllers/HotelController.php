@@ -23,12 +23,15 @@ class HotelController extends Controller
         // Query dasar
         $hotels = Hotel::query()->whereNotNull('latitude')->whereNotNull('longitude');
 
-        // Filter nama hotel
+        // Filter nama hotel atau lokasi/kota
         if (!empty($keyword)) {
-            $hotels->where('nama_hotel', 'like', "%{$keyword}%");
+            $hotels->where(function($q) use ($keyword) {
+                $q->where('nama_hotel', 'like', "%{$keyword}%")
+                  ->orWhere('lokasi', 'like', "%{$keyword}%");
+            });
         }
 
-        // Filter radius lokasi
+        // Filter radius lokasi (opsional, hanya jika lat/lng tersedia)
         if ($lat && $lng) {
             $hotels->selectRaw("
                 *,
