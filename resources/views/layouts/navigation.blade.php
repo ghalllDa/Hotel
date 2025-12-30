@@ -99,9 +99,12 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="block hover:text-blue-600">
-                            💸 Promo Kamar
-                        </a>
+                        
+    <a href="{{ route('promo.index') }}"
+       class="block hover:text-blue-600">
+        💸 Promo Kamar
+    </a>
+
                     </li>
                     <li>
                         <a href="#" class="block hover:text-blue-600">

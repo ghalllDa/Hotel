@@ -81,7 +81,22 @@
                         <div class="space-y-4">
                             @foreach ($hotel->rooms as $room)
                                 @if ($room->status === 'tersedia')
-                                    <div class="border rounded-lg p-4 flex flex-col md:flex-row gap-4">
+                                    @php
+                                        $promo = $room->promos->first();
+                                        $hargaDiskon = $promo
+                                            ? $room->harga - ($room->harga * $promo->diskon / 100)
+                                            : null;
+                                    @endphp
+
+                                    <div class="border rounded-lg p-4 flex flex-col md:flex-row gap-4 relative">
+
+                                        {{-- BADGE PROMO --}}
+                                        @if($promo)
+                                            <span class="absolute top-3 right-3 bg-red-600 text-white
+                                                         text-xs font-bold px-3 py-1 rounded-full">
+                                                Promo {{ $promo->diskon }}%
+                                            </span>
+                                        @endif
 
                                         <!-- FOTO KAMAR -->
                                         <div class="w-full md:w-48 h-40 flex-shrink-0">
@@ -116,14 +131,24 @@
 
                                             <!-- HARGA + BUTTON -->
                                             <div class="text-right">
-                                                <p class="text-orange-600 font-bold text-lg">
-                                                    Rp {{ number_format($room->harga, 0, ',', '.') }}
-                                                </p>
+                                                @if($promo)
+                                                    <p class="text-sm text-gray-400 line-through">
+                                                        Rp {{ number_format($room->harga, 0, ',', '.') }}
+                                                    </p>
+                                                    <p class="text-orange-600 font-bold text-lg">
+                                                        Rp {{ number_format($hargaDiskon, 0, ',', '.') }}
+                                                    </p>
+                                                @else
+                                                    <p class="text-orange-600 font-bold text-lg">
+                                                        Rp {{ number_format($room->harga, 0, ',', '.') }}
+                                                    </p>
+                                                @endif
+
                                                 <p class="text-xs text-gray-500">/ malam</p>
 
-                                                <!-- BUTTON BIRU (FIX) -->
                                                 <a href="{{ route('booking.create', $room->id) }}"
-                                                   class="mt-2 inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold">
+                                                   class="mt-2 inline-block bg-blue-600 hover:bg-blue-700
+                                                          text-white px-4 py-2 rounded-lg font-semibold">
                                                     Pilih Kamar
                                                 </a>
                                             </div>

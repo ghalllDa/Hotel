@@ -8,6 +8,7 @@ use App\Http\Controllers\BookingController; // BOOKING
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\HotelImageController;
+use App\Http\Controllers\Admin\PromoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +74,26 @@ Route::middleware(['auth', 'role:admin_operasional'])
             [HotelImageController::class, 'destroy']
         )->name('admin.hotels.images.destroy');
     });
+
+/*
+|--------------------------------------------------------------------------
+| Promo Kamar (ADMIN OPERASIONAL)  ✅ FIX DI SINI
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin_operasional'])
+    ->prefix('admin')
+    ->group(function () {
+
+        Route::get('/promo', [PromoController::class, 'index'])
+            ->name('promo.index');
+
+        Route::get('/promo/create', [PromoController::class, 'create'])
+            ->name('promo.create');
+
+        Route::post('/promo', [PromoController::class, 'store'])
+            ->name('promo.store');
+    });
+
 
 // HOTEL TERDEKAT
 Route::get('/hotels-nearby', [HotelController::class, 'nearby']);
