@@ -123,7 +123,9 @@ class AdminHotelController extends Controller
 
     public function show(Hotel $hotel)
     {
-        $hotel->load(['images', 'rooms']);
+        // ⬇️ SATU-SATUNYA PERUBAHAN DI SINI
+        $hotel->load(['images', 'rooms.promos']);
+
         return view('admin.hotels.show', compact('hotel'));
     }
 }

@@ -17,10 +17,19 @@ class DashboardController extends Controller
         $user = Auth::user();
         $role = $user->role;
 
-        // Ambil data hotel beserta kamar-nya
-        $hotels = Hotel::with('rooms')->get();
+        // ⬇️ FIX: ambil hotel + gambar + hanya kamar tersedia
+        $hotels = Hotel::with([
+                'images',
+                'rooms' => function ($q) {
+                    $q->where('status', 'tersedia');
+                }
+            ])
+            ->whereHas('rooms', function ($q) {
+                $q->where('status', 'tersedia');
+            })
+            ->get();
 
-        // Pilih view berdasarkan role
+        // Pilih view berdasarkan role (TIDAK DIUBAH)
         return match ($role) {
             'user' => view('dashboard.user', compact('hotels')),
             'admin_operasional' => view('dashboard.admin_operasional', compact('hotels')),
