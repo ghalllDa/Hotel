@@ -30,6 +30,7 @@ class AdminHotelController extends Controller
             'longitude'  => 'required',
             'harga'      => 'required|integer',
             'fasilitas'  => 'required|string',
+            'stars'      => 'required|integer|min:1|max:5',
             'images.*'   => 'image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -42,6 +43,7 @@ class AdminHotelController extends Controller
             'longitude'  => $data['longitude'],
             'harga'      => $data['harga'],
             'fasilitas'  => $data['fasilitas'],
+            'stars'      => $data['stars'],
         ]);
 
         // SIMPAN MULTI IMAGE
@@ -88,6 +90,7 @@ class AdminHotelController extends Controller
             'fasilitas'  => $request->fasilitas,
             'latitude'   => $request->latitude,
             'longitude'  => $request->longitude,
+            'stars'      => $request->stars,
         ]);
 
         // TAMBAH GAMBAR BARU (TIDAK HAPUS YANG LAMA)

@@ -18,6 +18,7 @@ class Hotel extends Model
         'harga',
         'fasilitas',
         'gambar',
+        'stars',
     ];
     public function rooms()
     {
