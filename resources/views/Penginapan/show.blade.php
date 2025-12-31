@@ -1,3 +1,4 @@
+
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-6 py-8">
 
@@ -93,7 +94,7 @@
                                         {{-- BADGE PROMO --}}
                                         @if($promo)
                                             <span class="absolute top-3 right-3 bg-red-600 text-white
-                                                         text-xs font-bold px-3 py-1 rounded-full">
+                                                                         text-xs font-bold px-3 py-1 rounded-full">
                                                 Promo {{ $promo->diskon }}%
                                             </span>
                                         @endif
@@ -104,8 +105,7 @@
                                                 <img src="{{ asset('storage/' . $room->foto) }}"
                                                     class="w-full h-full object-cover rounded-lg">
                                             @else
-                                                <img src="/img/no-image.png"
-                                                    class="w-full h-full object-cover rounded-lg">
+                                                <img src="/img/no-image.png" class="w-full h-full object-cover rounded-lg">
                                             @endif
                                         </div>
 
@@ -123,9 +123,8 @@
                                                         <li>{{ $f }}</li>
                                                     @endforeach
                                                 </ul>
-
                                                 <p class="text-sm text-gray-500 mt-1">
-                                                    Kapasitas: {{ $room->kapasitas }} orang
+                                                    Kapasitas: {{ $room->capacity ?? '-' }} orang
                                                 </p>
                                             </div>
 
@@ -146,9 +145,8 @@
 
                                                 <p class="text-xs text-gray-500">/ malam</p>
 
-                                                <a href="{{ route('booking.form', $room->id) }}"
-                                                   class="mt-2 inline-block bg-blue-600 hover:bg-blue-700
-                                                          text-white px-4 py-2 rounded-lg font-semibold">
+                                                <a href="{{ route('booking.form', $room->id) }}" class="mt-2 inline-block bg-blue-600 hover:bg-blue-700
+                                                                      text-white px-4 py-2 rounded-lg font-semibold">
                                                     Pilih Kamar
                                                 </a>
                                             </div>

@@ -143,6 +143,5 @@ Route::get('/hotels', function () {
 })->name('hotels.index');
 
 Route::get('/hotels-nearby', [HotelController::class, 'nearby']);
-Route::get('/hotels/{id}', [HotelController::class, 'show']);
 
 require __DIR__ . '/auth.php';

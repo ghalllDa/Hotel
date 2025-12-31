@@ -1,21 +1,28 @@
 <x-app-layout>
     <div class="max-w-5xl mx-auto px-6 py-8">
 
+        <!-- TOMBOL KEMBALI -->
+        <a href="{{ route('hotels.show', $room->hotel->id) }}" class="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full
+          bg-white shadow-sm border border-gray-200
+          text-sm font-semibold text-gray-700
+          hover:bg-gray-50 hover:text-orange-600
+          transition">
+
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Kembali
+        </a>
+
         <!-- JUDUL -->
         <h1 class="text-2xl font-bold text-gray-800 mb-6">
             Booking Kamar
         </h1>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        @if ($errors->any())
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-        <ul class="list-disc list-inside">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+
             <!-- FORM BOOKING -->
             <div class="md:col-span-2 bg-white rounded-lg shadow p-6">
                 <h2 class="text-lg font-bold mb-4">Detail Pemesanan</h2>
@@ -31,6 +38,11 @@
                         </label>
                         <input type="date" name="check_in" class="w-full mt-1 border rounded-lg px-3 py-2" required
                             min="{{ date('Y-m-d') }}">
+                        @error('check_in')
+                            <p class="text-sm text-red-600 mt-1">
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </div>
 
                     <!-- CHECK OUT -->
@@ -40,6 +52,11 @@
                         </label>
                         <input type="date" name="check_out" class="w-full mt-1 border rounded-lg px-3 py-2" required
                             min="{{ date('Y-m-d', strtotime('+1 day')) }}">
+                        @error('check_out')
+                            <p class="text-sm text-red-600 mt-1">
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </div>
 
                     <!-- JUMLAH TAMU -->
@@ -49,6 +66,11 @@
                         </label>
                         <input type="number" name="jumlah_tamu" min="1" class="w-full mt-1 border rounded-lg px-3 py-2"
                             required>
+                        @error('jumlah_tamu')
+                            <p class="text-sm text-red-600 mt-1">
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </div>
 
                     <!-- NAMA PEMESAN -->

@@ -20,20 +20,31 @@ class BookingController extends Controller
 
     public function createPayment(Request $request)
     {
+        $room = Room::findOrFail($request->room_id);
+
         $request->validate([
             'room_id' => 'required|integer|exists:rooms,id',
             'check_in' => 'required|date|after_or_equal:today',
             'check_out' => 'required|date|after:check_in',
-            'jumlah_tamu' => 'required|integer|min:1',
+            'jumlah_tamu' => 'required|integer|min:1|max:' . $room->capacity,
             'nama_pemesan' => 'required|string|max:255',
             'no_hp' => 'required|string|max:20',
             'catatan' => 'nullable|string',
+            
+        ], [
+            'jumlah_tamu.max' => 'Jumlah tamu melebihi kapasitas kamar.',
+            'check_out.after' => 'Tanggal check-out harus setelah check-in.',
         ]);
 
-        $room = Room::findOrFail($request->room_id);
-
         $request->validate([
-            'jumlah_tamu' => 'integer|max:' . ($room->kapasitas ?? 1), // fallback kalau null
+            'jumlah_tamu' => [
+                'required',
+                'integer',
+                'min:1',
+                'max:' . $room->capacity,
+            ],
+        ], [
+            'jumlah_tamu.max' => 'Jumlah tamu melebihi kapasitas kamar.',
         ]);
 
         // Setelah validasi sukses dan ambil $room
