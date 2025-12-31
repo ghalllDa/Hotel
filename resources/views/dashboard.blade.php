@@ -25,7 +25,29 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     @foreach($hotels as $hotel)
-                        <div class="bg-white rounded-lg shadow hover:shadow-lg transition">
+                        <div class="bg-white rounded-lg shadow hover:shadow-lg transition relative">
+
+                            {{-- BOOKMARK --}}
+                            @auth
+                            @php
+                                $isSaved = auth()->user()->savedHotels->contains($hotel->id);
+                            @endphp
+
+                            <button
+                                class="bookmark-btn {{ $isSaved ? 'saved' : '' }}"
+                                data-hotel-id="{{ $hotel->id }}"
+                                type="button"
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                    <path d="M6 2h12v20l-6-3-6 3V2z"
+                                          stroke="currentColor"
+                                          stroke-width="1.5"
+                                          fill="{{ $isSaved ? 'currentColor' : 'none' }}"/>
+                                </svg>
+                            </button>
+                            @endauth
+                            {{-- END BOOKMARK --}}
+
                             <img
                                 src="{{ $hotel->gambar ?? 'https://source.unsplash.com/400x250/?hotel' }}"
                                 class="rounded-t-lg w-full h-40 object-cover">
@@ -70,4 +92,59 @@
 
         </div>
     </div>
+
+    {{-- STYLE BOOKMARK (KHUSUS BOOKMARK) --}}
+    <style>
+        .bookmark-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: white;
+            border-radius: 9999px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .bookmark-btn svg {
+            color: #c2c2c2;
+        }
+
+        .bookmark-btn.saved svg {
+            color: #ef4444;
+        }
+    </style>
+
+    {{-- JAVASCRIPT BOOKMARK --}}
+    <script>
+        document.querySelectorAll('.bookmark-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const hotelId = this.dataset.hotelId;
+                const isSaved = this.classList.contains('saved');
+
+                fetch(`/hotels/${hotelId}/bookmark`, {
+                    method: isSaved ? 'DELETE' : 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(() => {
+                    this.classList.toggle('saved');
+
+                    const path = this.querySelector('path');
+                    path.setAttribute(
+                        'fill',
+                        this.classList.contains('saved') ? 'currentColor' : 'none'
+                    );
+                });
+            });
+        });
+    </script>
+
 </x-app-layout>

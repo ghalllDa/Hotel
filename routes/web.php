@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\HotelImageController;
 use App\Http\Controllers\Admin\PromoController;
+use App\Http\Controllers\User\BookmarkController; // BOOKMARK
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
-    // routes/web.php (di dalam middleware auth)
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])
         ->name('profile.photo.update');
 
@@ -42,15 +42,47 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
-    // DETAIL HOTEL (USER)
+    /*
+    |----------------------------------------------------------------------
+    | HOTEL USER
+    |----------------------------------------------------------------------
+    */
     Route::get('/hotels/{id}', [HotelController::class, 'show'])
         ->name('hotels.show');
 
-    // BOOKING KAMAR
-    Route::get('/booking/form/{room}', [BookingController::class, 'form'])->name('booking.form');
-    Route::post('/booking/create-payment', [BookingController::class, 'createPayment'])->name('booking.createPayment');
-    Route::post('/midtrans/notification', [BookingController::class, 'handleNotification'])->name('midtrans.notification');
-    Route::get('/booking/success', [BookingController::class, 'paymentSuccess'])->name('booking.success');
+    /*
+    |----------------------------------------------------------------------
+    | BOOKING
+    |----------------------------------------------------------------------
+    */
+    Route::get('/booking/form/{room}', [BookingController::class, 'form'])
+        ->name('booking.form');
+
+    Route::post('/booking/create-payment', [BookingController::class, 'createPayment'])
+        ->name('booking.createPayment');
+
+    Route::post('/midtrans/notification', [BookingController::class, 'handleNotification'])
+        ->name('midtrans.notification');
+
+    Route::get('/booking/success', [BookingController::class, 'paymentSuccess'])
+        ->name('booking.success');
+
+    /*
+    |----------------------------------------------------------------------
+    | BOOKMARK HOTEL (USER ONLY)
+    |----------------------------------------------------------------------
+    */
+    Route::get('/saved', [BookmarkController::class, 'index'])
+        ->name('bookmark.index');
+
+    Route::get('/saved-hotels', [BookmarkController::class, 'index'])
+        ->name('saved.hotels');
+
+    Route::post('/hotels/{hotel}/bookmark', [BookmarkController::class, 'store'])
+        ->name('bookmark.store');
+
+    Route::delete('/hotels/{hotel}/bookmark', [BookmarkController::class, 'destroy'])
+        ->name('bookmark.destroy');
 });
 
 /*
@@ -62,17 +94,13 @@ Route::middleware(['auth', 'role:admin_operasional'])
     ->prefix('admin-operasional')
     ->group(function () {
 
-        // HOTEL (CRUD)
         Route::resource('hotels', AdminHotelController::class);
 
-        // ROOM PER HOTEL
         Route::resource('hotels.rooms', RoomController::class);
 
-        // DETAIL HOTEL (ADMIN)
         Route::get('hotels/{hotel}', [AdminHotelController::class, 'show'])
             ->name('admin.hotels.show');
 
-        // HAPUS FOTO HOTEL
         Route::delete('hotels/images/{image}', [HotelImageController::class, 'destroy'])
             ->name('admin.hotels.images.destroy');
     });
@@ -85,6 +113,7 @@ Route::middleware(['auth', 'role:admin_operasional'])
 Route::middleware(['auth', 'role:admin_operasional'])
     ->prefix('admin')
     ->group(function () {
+
         Route::get('/promo', [PromoController::class, 'index'])
             ->name('promo.index');
 
@@ -94,9 +123,14 @@ Route::middleware(['auth', 'role:admin_operasional'])
         Route::post('/promo', [PromoController::class, 'store'])
             ->name('promo.store');
 
-         Route::get('/promo/{promo}/edit', [PromoController::class, 'edit'])->name('promo.edit');
-        Route::put('/promo/{promo}', [PromoController::class, 'update'])->name('promo.update');
-        Route::delete('/promo/{promo}', [PromoController::class, 'destroy'])->name('promo.destroy');
+        Route::get('/promo/{promo}/edit', [PromoController::class, 'edit'])
+            ->name('promo.edit');
+
+        Route::put('/promo/{promo}', [PromoController::class, 'update'])
+            ->name('promo.update');
+
+        Route::delete('/promo/{promo}', [PromoController::class, 'destroy'])
+            ->name('promo.destroy');
     });
 
 /*
@@ -104,7 +138,7 @@ Route::middleware(['auth', 'role:admin_operasional'])
 | Hotel Terdekat / Search
 |--------------------------------------------------------------------------
 */
-Route::get('/hotels', function() {
+Route::get('/hotels', function () {
     return view('penginapan.index');
 })->name('hotels.index');
 

@@ -20,6 +20,20 @@
                 <span class="font-semibold text-blue-700">
                     Dashboard
                 </span>
+
+                {{-- ❤️ MENU SAVED (KHUSUS USER, TIDAK UNTUK ADMIN) --}}
+                @auth
+                    @if(auth()->user()->role !== 'admin_operasional')
+                        <a
+                            href="{{ route('saved.hotels') }}"
+                            class="ml-6 text-base font-semibold text-gray-800 hover:text-blue-600"
+                        >
+                            Saved
+                        </a>
+
+                    @endif
+                @endauth
+                {{-- END SAVED --}}
             </div>
 
             <!-- KANAN: USER -->
@@ -27,7 +41,6 @@
                 @auth
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <!-- 🔽 SATU-SATUNYA BAGIAN YANG DIUBAH -->
                             <button class="flex items-center gap-3 text-sm font-medium text-gray-600 hover:text-gray-800">
 
                                 <img
@@ -76,7 +89,7 @@
         class="fixed inset-0 bg-black bg-opacity-40 z-40">
     </div>
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR ADMIN (TIDAK DIUBAH) -->
     <aside
         x-show="sidebarOpen"
         x-transition:enter="transition ease-out duration-300"
@@ -87,7 +100,6 @@
         x-transition:leave-end="-translate-x-full"
         class="fixed top-0 left-0 w-72 h-full bg-white shadow-lg z-50 overflow-y-auto">
 
-        <!-- HEADER SIDEBAR -->
         <div class="p-4 border-b flex justify-between items-center">
             <h2 class="font-bold text-lg text-blue-700">
                 Menu Admin
@@ -97,7 +109,6 @@
             </button>
         </div>
 
-        <!-- MENU -->
         <div class="p-4 space-y-4 text-sm">
 
             <div>
@@ -113,16 +124,8 @@
                             💸 Promo Kamar
                         </a>
                     </li>
-                    <li>
-                        <a href="#" class="block hover:text-blue-600">
-                            ⚙️ Fasilitas Hotel
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="block hover:text-blue-600">
-                            🔄 Status Kamar
-                        </a>
-                    </li>
+                    <li>⚙️ Fasilitas Hotel</li>
+                    <li>🔄 Status Kamar</li>
                 </ul>
             </div>
 
