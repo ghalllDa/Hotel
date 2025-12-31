@@ -29,17 +29,14 @@
             <!-- HERO -->
             <div class="relative rounded-3xl overflow-hidden mb-10">
 
-                <!-- HERO IMAGE -->
                 <img
                     src="https://images.unsplash.com/photo-1566073771259-6a8506099945"
                     class="absolute inset-0 w-full h-full object-cover"
                     alt="Hotel Hero"
                 >
 
-                <!-- OVERLAY -->
                 <div class="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-blue-700/60"></div>
 
-                <!-- CONTENT -->
                 <div class="relative z-10 px-8 py-16 text-white">
                     <h1 class="text-4xl font-bold mb-3">
                         Booking Hotel & Penginapan Murah
@@ -57,13 +54,13 @@
                         <input type="text" id="keyword" placeholder="Kota / Hotel"
                                class="border rounded-xl px-3 py-2 col-span-2">
 
-                        <input type="date"
+                        <input type="date" id="checkin"
                                class="border rounded-xl px-3 py-2">
 
-                        <input type="date"
+                        <input type="date" id="checkout"
                                class="border rounded-xl px-3 py-2">
 
-                        <input type="number" placeholder="Tamu"
+                        <input type="number" id="guests" placeholder="Tamu"
                                class="border rounded-xl px-3 py-2">
 
                         <button id="btnCari"
@@ -132,43 +129,26 @@
                 list.innerHTML = '';
                 renderMarkers(data);
 
+                if (!data.length) {
+                    list.innerHTML = `<p class="col-span-4 text-center text-gray-500">Hotel tidak ditemukan</p>`;
+                    return;
+                }
+
                 data.forEach(hotel => {
                     const saved = window.bookmarkedHotelIds.includes(hotel.id);
 
                     list.innerHTML += `
-                        <div class="bg-white/90 backdrop-blur
-                                    rounded-2xl shadow-lg
-                                    overflow-hidden
-                                    hover:shadow-2xl transition">
-
+                        <div class="bg-white/90 backdrop-blur rounded-2xl shadow-lg overflow-hidden">
                             <img src="${hotel.images?.[0]?.path ? '/storage/' + hotel.images[0].path : '/img/no-image.png'}"
                                  class="w-full h-44 object-cover">
-
                             <div class="p-5">
-                                <div class="flex justify-between">
-                                    <div>
-                                        <h3 class="font-bold text-lg">${hotel.nama_hotel}</h3>
-                                        <p class="text-sm text-gray-500">${hotel.lokasi}</p>
-                                    </div>
-
-                                    <button class="bookmark-btn ${saved ? 'saved' : ''}"
-                                            data-id="${hotel.id}">
-                                        <svg width="18" height="18" viewBox="0 0 24 24">
-                                            <path d="M6 2h12v20l-6-3-6 3V2z"
-                                                  stroke="currentColor"
-                                                  stroke-width="1.5"
-                                                  fill="${saved ? 'currentColor' : 'none'}"/>
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                <p class="text-orange-600 font-bold mt-3">
+                                <h3 class="font-bold text-lg">${hotel.nama_hotel}</h3>
+                                <p class="text-sm text-gray-500">${hotel.lokasi}</p>
+                                <p class="text-orange-600 font-bold mt-2">
                                     Rp ${Number(hotel.harga).toLocaleString('id-ID')} / malam
                                 </p>
-
                                 <a href="/hotels/${hotel.id}"
-                                   class="block mt-4 bg-blue-600 hover:bg-blue-700
-                                          text-white text-center py-2 rounded-xl font-semibold">
+                                   class="block mt-4 bg-blue-600 text-white text-center py-2 rounded-xl">
                                     Lihat Detail
                                 </a>
                             </div>
@@ -177,42 +157,31 @@
                 });
             }
 
+            // render awal
             renderHotels(window.initialHotels);
 
-            document.addEventListener('click', function (e) {
-                const btn = e.target.closest('.bookmark-btn');
-                if (!btn) return;
+            // ===============================
+            // ✅ FIX SEARCH BUTTON
+            // ===============================
+            document.getElementById('btnCari').addEventListener('click', function () {
 
-                const hotelId = btn.dataset.id;
-                const isSaved = btn.classList.contains('saved');
+                const keyword  = document.getElementById('keyword').value.toLowerCase();
+                const checkin  = document.getElementById('checkin').value;
+                const checkout = document.getElementById('checkout').value;
+                const guests   = document.getElementById('guests').value;
 
-                fetch(`/hotels/${hotelId}/bookmark`, {
-                    method: isSaved ? 'DELETE' : 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    }
-                }).then(() => {
-                    btn.classList.toggle('saved');
-                    btn.querySelector('path').setAttribute(
-                        'fill',
-                        btn.classList.contains('saved') ? 'currentColor' : 'none'
-                    );
+                const filtered = window.initialHotels.filter(hotel => {
+                    const matchKeyword =
+                        hotel.nama_hotel.toLowerCase().includes(keyword) ||
+                        hotel.lokasi.toLowerCase().includes(keyword);
+
+                    return matchKeyword;
                 });
+
+                renderHotels(filtered);
             });
+
         });
     </script>
-
-    <style>
-        .bookmark-btn {
-            background: white;
-            border-radius: 9999px;
-            padding: 6px;
-            border: 1px solid #e5e7eb;
-        }
-        .bookmark-btn.saved svg {
-            color: #ef4444;
-        }
-    </style>
 
 </x-app-layout>

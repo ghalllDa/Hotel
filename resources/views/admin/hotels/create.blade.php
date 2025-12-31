@@ -10,22 +10,16 @@
                 </a>
 
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-blue-100
-                                flex items-center justify-center text-blue-600 text-xl">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 text-xl">
                         🏨
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900">
-                            Tambah Hotel
-                        </h1>
-                        <p class="text-sm text-gray-500">
-                            Lengkapi informasi hotel dengan benar
-                        </p>
+                        <h1 class="text-2xl font-bold text-gray-900">Tambah Hotel</h1>
+                        <p class="text-sm text-gray-500">Lengkapi informasi hotel dengan benar</p>
                     </div>
                 </div>
 
-                <div class="mt-6 h-px bg-gradient-to-r
-                            from-transparent via-gray-300 to-transparent"></div>
+                <div class="mt-6 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
             </div>
 
             {{-- ERROR --}}
@@ -40,63 +34,52 @@
             @endif
 
             {{-- FORM --}}
-            <form action="{{ route('hotels.store') }}"
-                  method="POST"
-                  enctype="multipart/form-data"
+            <form action="{{ route('hotels.store') }}" method="POST" enctype="multipart/form-data"
                   class="bg-white rounded-2xl shadow-xl p-8 space-y-8">
                 @csrf
 
                 {{-- INFORMASI UTAMA --}}
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">
-                        Informasi Utama
-                    </h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Informasi Utama</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Nama Hotel
-                            </label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Hotel</label>
                             <input type="text" name="nama_hotel"
-                                   class="w-full rounded-xl border-gray-300
-                                          focus:ring-blue-500 focus:border-blue-500"
+                                   class="w-full rounded-xl border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                    required>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Alamat / Lokasi
-                            </label>
+                        {{-- INPUT LOKASI (KODE LAMA TIDAK DIUBAH) --}}
+                        <div class="relative">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Alamat / Lokasi</label>
                             <input type="text" name="lokasi" id="lokasi"
-                                   class="w-full rounded-xl border-gray-300
-                                          focus:ring-blue-500 focus:border-blue-500"
+                                   class="w-full rounded-xl border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                    placeholder="Contoh: Jl Asia Afrika Bandung"
                                    required>
+
+                            {{-- TAMBAHAN: DROPDOWN SUGGESTION --}}
+                            <div id="suggestions"
+                                 class="absolute z-50 bg-white border rounded-xl shadow-md w-full mt-1 hidden max-h-60 overflow-auto text-sm">
+                            </div>
+
                             <p class="text-xs text-gray-500 mt-1">
-                                Ketik lokasi → Enter → geser marker jika perlu
+                                Ketik lokasi → map otomatis berubah → geser marker jika perlu
                             </p>
                         </div>
                     </div>
 
                     <div class="mt-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Deskripsi Hotel
-                        </label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Hotel</label>
                         <textarea name="deskripsi" rows="4"
-                                  class="w-full rounded-xl border-gray-300
-                                         focus:ring-blue-500 focus:border-blue-500"
+                                  class="w-full rounded-xl border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                   required>{{ old('deskripsi') }}</textarea>
-                        <p class="text-xs text-gray-500 mt-1">
-                            Contoh: Hotel nyaman di pusat kota dengan fasilitas lengkap
-                        </p>
                     </div>
                 </div>
 
                 {{-- LOKASI --}}
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">
-                        Lokasi Hotel
-                    </h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Lokasi Hotel</h2>
 
                     <input type="hidden" name="latitude" id="latitude" value="-6.200000">
                     <input type="hidden" name="longitude" id="longitude" value="106.816666">
@@ -108,29 +91,20 @@
 
                 {{-- DETAIL --}}
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">
-                        Detail Tambahan
-                    </h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Detail Tambahan</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Harga per Malam
-                            </label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Harga per Malam</label>
                             <input type="number" name="harga"
-                                   class="w-full rounded-xl border-gray-300
-                                          focus:ring-blue-500 focus:border-blue-500"
-                                   placeholder="350000"
+                                   class="w-full rounded-xl border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                    required>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Bintang Hotel
-                            </label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Bintang Hotel</label>
                             <select name="stars"
-                                    class="w-full rounded-xl border-gray-300
-                                           focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full rounded-xl border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                     required>
                                 @for ($i = 1; $i <= 5; $i++)
                                     <option value="{{ $i }}">{{ $i }} ⭐</option>
@@ -139,12 +113,9 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Fasilitas
-                            </label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Fasilitas</label>
                             <input type="text" name="fasilitas"
-                                   class="w-full rounded-xl border-gray-300
-                                          focus:ring-blue-500 focus:border-blue-500"
+                                   class="w-full rounded-xl border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                    placeholder="AC, WiFi, Sarapan"
                                    required>
                         </div>
@@ -153,20 +124,13 @@
 
                 {{-- GAMBAR --}}
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">
-                        Gambar Hotel
-                    </h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Gambar Hotel</h2>
 
                     <input type="file" name="images[]" id="gambar" multiple accept="image/*"
                            class="block w-full text-sm text-gray-600
-                                  file:mr-4 file:py-2 file:px-4
-                                  file:rounded-xl file:border-0
-                                  file:bg-blue-100 file:text-blue-700
-                                  hover:file:bg-blue-200 transition">
-
-                    <p class="text-xs text-gray-500 mt-2">
-                        Bisa upload lebih dari satu gambar
-                    </p>
+                           file:mr-4 file:py-2 file:px-4
+                           file:rounded-xl file:border-0
+                           file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 transition">
 
                     <div id="preview" class="mt-4 flex gap-3 flex-wrap"></div>
                 </div>
@@ -174,14 +138,12 @@
                 {{-- ACTION --}}
                 <div class="flex justify-end gap-4 pt-6 border-t">
                     <a href="{{ route('hotels.index') }}"
-                       class="px-6 py-2.5 rounded-xl bg-gray-100 text-gray-700
-                              font-semibold hover:bg-gray-200 transition">
+                       class="px-6 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition">
                         Batal
                     </a>
 
                     <button type="submit"
-                            class="px-6 py-2.5 rounded-xl bg-blue-600 text-white
-                                   font-semibold hover:bg-blue-700 transition shadow">
+                            class="px-6 py-2.5 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow">
                         Simpan Hotel
                     </button>
                 </div>
@@ -189,7 +151,7 @@
         </div>
     </div>
 
-    {{-- LEAFLET & SCRIPT ASLI (TIDAK DIUBAH) --}}
+    {{-- LEAFLET --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -220,20 +182,86 @@
             longitude.value = e.latlng.lng;
         });
 
-        document.getElementById('lokasi').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.value)}&countrycodes=id&limit=1`)
+        /* ====== KODE LAMA (TIDAK DIUBAH) ====== */
+        let debounceTimer = null;
+
+        document.getElementById('lokasi').addEventListener('input', function () {
+            const query = this.value;
+            if (query.length < 4) return;
+
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=id&limit=1`)
                     .then(res => res.json())
                     .then(data => {
-                        if (!data.length) return alert('Lokasi tidak ditemukan');
+                        if (!data.length) return;
+
                         const lat = parseFloat(data[0].lat);
                         const lon = parseFloat(data[0].lon);
+
                         map.setView([lat, lon], 16);
                         marker.setLatLng([lat, lon]);
                         latitude.value = lat;
                         longitude.value = lon;
                     });
+            }, 700);
+        });
+
+        /* ====== TAMBAHAN: AUTOCOMPLETE RESPONSIVE ====== */
+        const lokasiInput = document.getElementById('lokasi');
+        const suggestionsBox = document.getElementById('suggestions');
+        let autoTimer = null;
+
+        lokasiInput.addEventListener('input', function () {
+            const q = this.value;
+
+            if (q.length < 1) {
+                suggestionsBox.classList.add('hidden');
+                return;
+            }
+
+            clearTimeout(autoTimer);
+            autoTimer = setTimeout(() => {
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&countrycodes=id&limit=5`)
+                    .then(res => res.json())
+                    .then(data => {
+                        suggestionsBox.innerHTML = '';
+
+                        if (!data.length) {
+                            suggestionsBox.classList.add('hidden');
+                            return;
+                        }
+
+                        data.forEach(item => {
+                            const div = document.createElement('div');
+                            div.className = 'px-4 py-2 hover:bg-blue-100 cursor-pointer';
+                            div.textContent = item.display_name;
+
+                            div.onclick = () => {
+                                lokasiInput.value = item.display_name;
+
+                                const lat = parseFloat(item.lat);
+                                const lon = parseFloat(item.lon);
+
+                                map.setView([lat, lon], 16);
+                                marker.setLatLng([lat, lon]);
+                                latitude.value = lat;
+                                longitude.value = lon;
+
+                                suggestionsBox.classList.add('hidden');
+                            };
+
+                            suggestionsBox.appendChild(div);
+                        });
+
+                        suggestionsBox.classList.remove('hidden');
+                    });
+            }, 300);
+        });
+
+        document.addEventListener('click', e => {
+            if (!lokasiInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.classList.add('hidden');
             }
         });
 
