@@ -82,6 +82,7 @@ class BookingController extends Controller
 
         // SEKARANG BARU SIMPAN BOOKING
         $booking = Booking::create([
+            'user_id' => Auth::id(),
             'room_id' => $room->id,
             'check_in' => $request->check_in,
             'check_out' => $request->check_out,

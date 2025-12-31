@@ -21,7 +21,6 @@
                     Dashboard
                 </span>
 
-                {{-- ❤️ MENU SAVED (KHUSUS USER, TIDAK UNTUK ADMIN) --}}
                 @auth
                     @if(auth()->user()->role !== 'admin_operasional')
                         <a
@@ -30,10 +29,8 @@
                         >
                             Saved
                         </a>
-
                     @endif
                 @endauth
-                {{-- END SAVED --}}
             </div>
 
             <!-- KANAN: USER -->
@@ -42,7 +39,6 @@
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="flex items-center gap-3 text-sm font-medium text-gray-600 hover:text-gray-800">
-
                                 <img
                                     class="h-8 w-8 rounded-full object-cover border"
                                     src="{{ auth()->user()->profile_photo
@@ -50,9 +46,7 @@
                                         : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
                                     alt="{{ auth()->user()->name }}"
                                 >
-
                                 <span>{{ auth()->user()->name }}</span>
-
                                 <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                           d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
@@ -77,7 +71,6 @@
                     </x-dropdown>
                 @endauth
             </div>
-
         </div>
     </div>
 
@@ -89,7 +82,7 @@
         class="fixed inset-0 bg-black bg-opacity-40 z-40">
     </div>
 
-    <!-- SIDEBAR ADMIN (TIDAK DIUBAH) -->
+    <!-- SIDEBAR ADMIN -->
     <aside
         x-show="sidebarOpen"
         x-transition:enter="transition ease-out duration-300"
@@ -101,12 +94,8 @@
         class="fixed top-0 left-0 w-72 h-full bg-white shadow-lg z-50 overflow-y-auto">
 
         <div class="p-4 border-b flex justify-between items-center">
-            <h2 class="font-bold text-lg text-blue-700">
-                Menu Admin
-            </h2>
-            <button @click="sidebarOpen = false">
-                ✖
-            </button>
+            <h2 class="font-bold text-lg text-blue-700">Menu Admin</h2>
+            <button @click="sidebarOpen = false">✖</button>
         </div>
 
         <div class="p-4 space-y-4 text-sm">
@@ -129,13 +118,34 @@
                 </ul>
             </div>
 
+            <!-- 🔥 FIXED: MANAJEMEN PEMESANAN -->
             <div>
                 <p class="font-semibold text-gray-700 mb-2">Manajemen Pemesanan</p>
                 <ul class="space-y-2 ml-2">
-                    <li>📋 Daftar Pesanan</li>
-                    <li>✅ Menyetujui Pemesanan</li>
-                    <li>❌ Pembatalan</li>
-                    <li>💳 Status Pembayaran</li>
+                    <li>
+                        <a href="{{ route('admin.bookings.index') }}"
+                           class="block hover:text-blue-600">
+                            📋 Daftar Pesanan
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.bookings.index') }}?status=approved"
+                           class="block hover:text-blue-600">
+                            ✅ Menyetujui Pemesanan
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.bookings.index') }}?status=refund"
+                           class="block hover:text-blue-600">
+                            ❌ Pembatalan
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.bookings.index') }}"
+                           class="block hover:text-blue-600">
+                            💳 Status Pembayaran
+                        </a>
+                    </li>
                 </ul>
             </div>
 

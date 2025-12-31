@@ -5,6 +5,17 @@
                 Penginapan Hotelku
             </h1>
 
+            {{-- ========================= --}}
+            {{-- 🎫 TAMBAHAN: TOMBOL TIKET --}}
+            {{-- ========================= --}}
+            <div class="flex justify-end mb-4">
+                <a href="{{ route('tickets.index') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition">
+                    🎫 Tiket Saya
+                </a>
+            </div>
+            {{-- ========================= --}}
+
             <!-- HERO -->
             <div class="bg-gradient-to-r from-blue-600 to-blue-400 py-12">
                 <div class="max-w-7xl mx-auto px-6 text-white">
