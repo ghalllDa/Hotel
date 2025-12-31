@@ -42,8 +42,9 @@
                 gap-8 pb-16">
 
         @foreach($hotels as $hotel)
-            <a href="{{ route('admin.hotels.show', $hotel->id) }}"
-               class="hotel-card group bg-white rounded-2xl overflow-hidden">
+          <a href="{{ route('admin.hotels.show', $hotel->id) }}"
+             class="hotel-card group bg-white rounded-2xl overflow-hidden flex flex-col h-full">
+
 
                 @php
                     $gambar  = $hotel->images->first();
@@ -86,7 +87,8 @@
                 </div>
 
                 {{-- CONTENT --}}
-                <div class="p-5">
+               <div class="p-5 flex flex-col flex-1">
+
 
                     <h2 class="text-lg font-bold text-gray-800
                                group-hover:text-orange-600 transition">
@@ -109,7 +111,7 @@
                     </div>
 
                     {{-- FOOTER --}}
-                    <div class="flex justify-end mt-6">
+                    <div class="flex justify-end mt-auto">
                         <span class="text-sm font-semibold text-orange-600
                                      group-hover:translate-x-1 transition">
                             Lihat Detail →
