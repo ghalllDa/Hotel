@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Midtrans\Snap;
 use Midtrans\Config;
 use Illuminate\Support\Facades\Auth;
+use Midtrans\Notification;
+
 
 class BookingController extends Controller
 {
@@ -30,7 +32,7 @@ class BookingController extends Controller
             'nama_pemesan' => 'required|string|max:255',
             'no_hp' => 'required|string|max:20',
             'catatan' => 'nullable|string',
-            
+
         ], [
             'jumlah_tamu.max' => 'Jumlah tamu melebihi kapasitas kamar.',
             'check_out.after' => 'Tanggal check-out harus setelah check-in.',
@@ -186,6 +188,13 @@ class BookingController extends Controller
 
         if (!$booking) {
             abort(404, 'Booking tidak ditemukan.');
+        }
+
+        // ✅ DEV MODE ONLY (localhost)
+        if (app()->environment('local') && $booking->status !== 'paid') {
+            $booking->update([
+                'status' => 'paid'
+            ]);
         }
 
         // Opsional: cek apakah status sudah paid (dari webhook)
