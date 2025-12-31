@@ -17,13 +17,19 @@
                     @endif
                 @endauth
 
+                 @auth
                 <span class="font-extrabold text-blue-700 text-lg tracking-wide">
                     HOME
                 </span>
+               
+             
+                @if(auth()->user()->role === 'user')
+                    <x-nav-link :href="route('bookmark.index')" :active="request()->routeIs('bookmark.*')">
+                        SAVE
+                    </x-nav-link>
+                @endif
+            @endauth
 
-                 <x-nav-link :href="route('bookmark.index')" :active="request()->routeIs('bookmark.*')">
-                    SAVE
-                </x-nav-link>
             </div>
 
             <!-- RIGHT -->
