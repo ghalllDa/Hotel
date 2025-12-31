@@ -1,6 +1,4 @@
 <x-app-layout>
-
-    {{-- STYLE TAMBAHAN (AMAN, TIDAK SENTUH LOGIKA) --}}
     <style>
         body {
             background: linear-gradient(135deg, #f8fafc, #eef2ff);

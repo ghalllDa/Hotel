@@ -18,13 +18,18 @@
                 @endauth
 
                 <span class="font-extrabold text-blue-700 text-lg tracking-wide">
-                    Admin Panel
+                    HOME
                 </span>
+
+                 <x-nav-link :href="route('bookmark.index')" :active="request()->routeIs('bookmark.*')">
+                    SAVE
+                </x-nav-link>
             </div>
 
             <!-- RIGHT -->
             <div class="flex items-center gap-4">
                 @auth
+
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition">
