@@ -90,16 +90,37 @@
                                         @endif
                                     </td>
 
-                                    <td class="px-4 py-3">
-                                        @if ($status === 'approved' && $order->ticket)
-                                            <a href="{{ route('tickets.show', $order->ticket->id) }}"
-                                               class="inline-block bg-green-600 text-white px-3 py-1 rounded text-xs">
-                                                Lihat Tiket
-                                            </a>
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
+                                    <td class="px-4 py-3 space-y-1">
+    {{-- LIHAT TIKET --}}
+    @if ($status === 'approved' && $order->ticket)
+        <a href="{{ route('tickets.show', $order->ticket->id) }}"
+           class="inline-block bg-green-600 hover:bg-green-700
+                  text-white px-3 py-1 rounded text-xs">
+            Lihat Tiket
+        </a>
+    @endif
+
+    {{-- REVIEW HOTEL (HANYA APPROVED) --}}
+    @if ($status === 'approved')
+        @if (!$order->review)
+            <a href="{{ route('reviews.create', $order->id) }}"
+               class="inline-block bg-yellow-500 hover:bg-yellow-600
+                      text-white px-3 py-1 rounded text-xs">
+                Review Hotel
+            </a>
+        @else
+            <span class="inline-block bg-gray-200 text-gray-600
+                         px-3 py-1 rounded text-xs">
+                Sudah Direview
+            </span>
+        @endif
+    @endif
+
+    @if ($status !== 'approved')
+        -
+    @endif
+</td>
+
                                 </tr>
                             @endforeach
                         </tbody>
