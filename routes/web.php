@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\HotelImageController;
 use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\User\BookmarkController;
 use App\Http\Controllers\User\UserTicketController;
+use App\Http\Controllers\User\OrderHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,12 +58,14 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/hotels/{hotel}/bookmark', [BookmarkController::class, 'destroy'])->name('bookmark.destroy');
 
     /*
-    |--------------------------------------------------------------------------
-    | 🎫 TIKET USER (FINAL & STABIL)
-    |--------------------------------------------------------------------------
+    | RIWAYAT PESANAN (FIXED)
     */
+    Route::get('/riwayat-pesanan', [OrderHistoryController::class, 'index'])
+        ->name('user.order-history');
 
-    // SATU ROUTE, SATU NAMA (INI YANG DIPAKAI BLADE)
+    /*
+    | 🎫 TIKET USER
+    */
     Route::get('/tickets', [UserTicketController::class, 'index'])
         ->name('tickets.index');
 

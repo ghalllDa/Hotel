@@ -17,25 +17,41 @@
                     @endif
                 @endauth
 
-                 @auth
-                <span class="font-extrabold text-blue-700 text-lg tracking-wide">
-                    HOME
-                </span>
-               
-             
-                @if(auth()->user()->role === 'user')
-                    <x-nav-link :href="route('bookmark.index')" :active="request()->routeIs('bookmark.*')">
-                        SAVE
-                    </x-nav-link>
-                @endif
-            @endauth
+                @auth
+                    <span class="font-extrabold text-blue-700 text-lg tracking-wide">
+                        HOME
+                    </span>
 
+                    @if(auth()->user()->role === 'user')
+                        <!-- MENU USER -->
+                        <div class="flex items-center gap-4 ml-4">
+
+                            <x-nav-link
+                                :href="route('bookmark.index')"
+                                :active="request()->routeIs('bookmark.*')">
+                                SAVE
+                            </x-nav-link>
+
+                            <x-nav-link
+                                :href="route('user.order-history')"
+                                :active="request()->routeIs('user.order-history')">
+                                RIWAYAT PESANAN
+                            </x-nav-link>
+
+                            <x-nav-link
+                                :href="route('tickets.index')"
+                                :active="request()->routeIs('tickets.*')">
+                                TICKET
+                            </x-nav-link>
+
+                        </div>
+                    @endif
+                @endauth
             </div>
 
             <!-- RIGHT -->
             <div class="flex items-center gap-4">
                 @auth
-
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition">
@@ -79,7 +95,7 @@
          @click="sidebarOpen = false"
          class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"></div>
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR ADMIN (TIDAK DIUBAH) -->
     <aside
         x-show="sidebarOpen"
         x-transition:enter="transition ease-out duration-300"
@@ -92,7 +108,6 @@
                bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900
                text-gray-200 shadow-2xl z-50 overflow-y-auto">
 
-        <!-- SIDEBAR HEADER -->
         <div class="p-6 border-b border-white/10">
             <h2 class="text-xl font-extrabold text-white tracking-wide">
                 🛠 Administrator
@@ -100,10 +115,8 @@
             <p class="text-xs text-gray-400 mt-1">Hotel Management System</p>
         </div>
 
-        <!-- MENU -->
         <div class="p-5 space-y-6 text-sm">
 
-            <!-- HOTEL -->
             <div>
                 <p class="text-xs uppercase tracking-widest text-gray-400 mb-3">
                     Hotel
@@ -124,7 +137,6 @@
                 </ul>
             </div>
 
-            <!-- BOOKING -->
             <div>
                 <p class="text-xs uppercase tracking-widest text-gray-400 mb-3">
                     Pemesanan
@@ -136,30 +148,15 @@
                             📋 Daftar Pesanan
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.bookings.index') }}?status=approved"
-                           class="menu-item">
-                            ✅ Disetujui
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.bookings.index') }}?status=refund"
-                           class="menu-item">
-                            ❌ Pembatalan
-                        </a>
-                    </li>
                 </ul>
             </div>
 
-            <!-- FOOTER -->
             <div class="pt-6 border-t border-white/10 text-xs text-gray-400 text-center">
-                © {{ date('Y') }} Hotel System  
+                © {{ date('Y') }} Hotel System
             </div>
-
         </div>
     </aside>
 
-    <!-- STYLE KHUSUS (TANPA GANGGU KODE LAMA) -->
     <style>
         .menu-item {
             display: flex;
