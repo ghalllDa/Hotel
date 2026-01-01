@@ -18,34 +18,61 @@
                 @endauth
 
                 @auth
-                    <span class="font-extrabold text-blue-700 text-lg tracking-wide">
-                        HOME
-                    </span>
-
+                  
                     @if(auth()->user()->role === 'user')
-                        <!-- MENU USER -->
-                        <div class="flex items-center gap-4 ml-4">
+    <!-- MENU USER -->
+    <div
+        x-data="navPill()"
+        x-init="init()"
+        class="relative flex items-center gap-2 ml-4"
+    >
 
-                            <x-nav-link
-                                :href="route('bookmark.index')"
-                                :active="request()->routeIs('bookmark.*')">
-                                SAVE
-                            </x-nav-link>
+        <!-- PILL BACKGROUND (FIXED) -->
+    <div
+        x-ref="pill"
+        class="absolute bg-blue-100 rounded-full
+               transition-all duration-300 ease-out"
+        style="left:0; width:0; height:0"
+    ></div>
 
-                            <x-nav-link
-                                :href="route('user.order-history')"
-                                :active="request()->routeIs('user.order-history')">
-                                RIWAYAT PESANAN
-                            </x-nav-link>
+    <x-nav-link
+        @click="move($el)"
+        :href="route('dashboard')"
+        :active="request()->routeIs('dashboard')"
+        class="relative z-10 px-5 py-2 rounded-full"
+    >
+        Home
+    </x-nav-link>
 
-                            <x-nav-link
-                                :href="route('tickets.index')"
-                                :active="request()->routeIs('tickets.*')">
-                                TICKET
-                            </x-nav-link>
+    <x-nav-link
+        @click="move($el)"
+        :href="route('bookmark.index')"
+        :active="request()->routeIs('bookmark.*')"
+        class="relative z-10 px-5 py-2 rounded-full"
+    >
+        Save
+    </x-nav-link>
 
-                        </div>
-                    @endif
+    <x-nav-link
+        @click="move($el)"
+        :href="route('user.order-history')"
+        :active="request()->routeIs('user.order-history')"
+        class="relative z-10 px-5 py-2 rounded-full"
+    >
+        Riwayat Pesanan
+    </x-nav-link>
+
+    <x-nav-link
+        @click="move($el)"
+        :href="route('tickets.index')"
+        :active="request()->routeIs('tickets.*')"
+        class="relative z-10 px-5 py-2 rounded-full"
+    >
+        Ticket
+    </x-nav-link>
+    </div>
+@endif
+
                 @endauth
             </div>
 
@@ -180,3 +207,4 @@
         }
     </style>
 </nav>
+

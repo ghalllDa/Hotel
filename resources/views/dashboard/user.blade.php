@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <!-- BACKGROUND -->
+    <!-- ================= MAIN CONTENT ================= -->
     <div class="min-h-screen bg-gradient-to-br from-blue-100 via-slate-100 to-blue-200 py-10">
 
         <!-- MAIN CARD -->
@@ -78,22 +78,61 @@
         </div>
     </div>
 
-    {{-- DATA DARI CONTROLLER --}}
+    <!-- ================= SUBSCRIBE ================= -->
+    <section class="bg-white py-12">
+        <div class="max-w-5xl mx-auto bg-blue-500 rounded-2xl px-8 py-10 text-white">
+            <h2 class="text-2xl font-bold mb-2">
+                Suscríbete y entérate de nuestras ofertas
+            </h2>
+            <p class="text-blue-100">
+                Recibirás las mejores promociones y descuentos a tu email.
+            </p>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-white border-t py-12">
+        <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-sm text-gray-600">
+
+            <div>
+                <h4 class="font-bold mb-2">Compañía</h4>
+                <p>Mi cuenta</p>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-2">Políticas</h4>
+                <p>Términos y condiciones</p>
+                <p>Política de privacidad</p>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-2">Ayuda</h4>
+                <p>Atención al cliente</p>
+                <p>Preguntas frecuentes</p>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-2">Contáctanos</h4>
+                <p>+511 616 9080</p>
+                <p class="text-pink-600 font-semibold">Libro de Reclamaciones</p>
+            </div>
+
+        </div>
+    </footer>
+
+    {{-- DATA DARI CONTROLLER (TIDAK DIUBAH) --}}
     <script>
         window.initialHotels = @json($hotels);
         window.bookmarkedHotelIds = @json($bookmarkedHotelIds);
     </script>
 
-    {{-- LEAFLET --}}
+    {{-- LEAFLET (TIDAK DIUBAH) --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            /* ===============================
-               OPEN STREET MAP (TIDAK DIUBAH)
-            =============================== */
             const map = L.map('map').setView([-6.2, 106.816666], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap'
@@ -116,9 +155,6 @@
                 });
             }
 
-            /* ===============================
-               HOTEL CARD + BOOKMARK
-            =============================== */
             const list = document.getElementById('hotel-list');
 
             function renderHotels(data) {
@@ -137,7 +173,7 @@
                     const saved = window.bookmarkedHotelIds.includes(hotel.id);
 
                     list.innerHTML += `
-                        <div class="bg-white/90 backdrop-blur rounded-2xl shadow-lg overflow-hidden hotel-card">
+                        <div class="bg-white/90 backdrop-blur rounded-2xl shadow-lg overflow-hidden">
 
                             <img src="${hotel.images?.[0]?.path
                                 ? '/storage/' + hotel.images[0].path
@@ -146,7 +182,6 @@
 
                             <div class="p-5">
 
-                                <!-- NAMA + LOKASI + BOOKMARK -->
                                 <div class="flex justify-between items-start gap-2">
                                     <div>
                                         <h3 class="font-bold text-lg">
@@ -186,9 +221,6 @@
 
             renderHotels(window.initialHotels);
 
-            /* ===============================
-               SEARCH (TIDAK DIUBAH)
-            =============================== */
             document.getElementById('btnCari').addEventListener('click', function () {
                 const keyword = document.getElementById('keyword').value.toLowerCase();
 
@@ -200,9 +232,6 @@
                 renderHotels(filtered);
             });
 
-            /* ===============================
-               BOOKMARK ACTION
-            =============================== */
             document.addEventListener('click', function (e) {
                 const btn = e.target.closest('.bookmark-btn');
                 if (!btn) return;
@@ -234,7 +263,7 @@
         });
     </script>
 
-    <!-- STYLE BOOKMARK -->
+    <!-- STYLE BOOKMARK (TIDAK DIUBAH) -->
     <style>
         .bookmark-btn {
             background: white;
@@ -243,11 +272,9 @@
             border: 1px solid #e5e7eb;
             cursor: pointer;
         }
-
         .bookmark-btn svg {
             color: #9ca3af;
         }
-
         .bookmark-btn.saved svg {
             color: #ef4444;
         }

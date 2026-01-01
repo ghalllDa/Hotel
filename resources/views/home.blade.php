@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <!-- HERO SECTION -->
+    <!-- ================= HERO SECTION ================= -->
     <section class="relative h-[85vh] flex items-center justify-center">
 
         <!-- BACKGROUND IMAGE -->
@@ -39,7 +39,7 @@
         </div>
     </section>
 
-    <!-- PROMO SECTION -->
+    <!-- ================= PROMO SECTION ================= -->
     <section class="max-w-7xl mx-auto px-6 -mt-20 relative z-20">
         <div class="bg-white rounded-2xl shadow-xl p-8
                     flex flex-col md:flex-row justify-between items-center">
@@ -59,5 +59,47 @@
             </button>
         </div>
     </section>
+
+    <!-- ================= SUBSCRIBE SECTION ================= -->
+    <section class="bg-white py-12 mt-24">
+        <div class="max-w-5xl mx-auto bg-blue-500 rounded-2xl px-8 py-10 text-white">
+            <h2 class="text-2xl font-bold mb-2">
+                Suscríbete y entérate de nuestras ofertas
+            </h2>
+            <p class="text-blue-100">
+                Recibirás las mejores promociones y descuentos a tu email.
+            </p>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-white border-t py-12">
+        <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-sm text-gray-600">
+
+            <div>
+                <h4 class="font-bold mb-2">Compañía</h4>
+                <p>Mi cuenta</p>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-2">Políticas</h4>
+                <p>Términos y condiciones</p>
+                <p>Política de privacidad</p>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-2">Ayuda</h4>
+                <p>Atención al cliente</p>
+                <p>Preguntas frecuentes</p>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-2">Contáctanos</h4>
+                <p>+511 616 9080</p>
+                <p class="text-pink-600 font-semibold">Libro de Reclamaciones</p>
+            </div>
+
+        </div>
+    </footer>
 
 </x-app-layout>
