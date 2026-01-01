@@ -110,13 +110,12 @@
                 <h2 class="text-lg font-bold mb-4">Ringkasan Kamar</h2>
 
                 <!-- FOTO KAMAR -->
-                <div class="w-full h-40 mb-4">
-                    @if ($room->foto)
-                        <img src="{{ asset('storage/' . $room->foto) }}" class="w-full h-full object-cover rounded-lg">
-                    @else
-                        <img src="/img/no-image.png" class="w-full h-full object-cover rounded-lg">
+                <div class="w-full md:w-50 h-35 flex-shrink-0">
+                    @if($room->gambar)
+                        <img src="{{ asset('storage/' . $room->gambar) }}" class="w-full h-40 object-cover rounded-lg mb-3">
                     @endif
                 </div>
+
 
                 <!-- HOTEL -->
                 <p class="font-semibold text-gray-800">

@@ -25,9 +25,9 @@ class HotelController extends Controller
 
         // Filter nama hotel atau lokasi/kota
         if (!empty($keyword)) {
-            $hotels->where(function($q) use ($keyword) {
+            $hotels->where(function ($q) use ($keyword) {
                 $q->where('nama_hotel', 'like', "%{$keyword}%")
-                  ->orWhere('lokasi', 'like', "%{$keyword}%");
+                    ->orWhere('lokasi', 'like', "%{$keyword}%");
             });
         }
 
@@ -43,31 +43,31 @@ class HotelController extends Controller
                     sin(radians(latitude))
                 )) AS distance
             ", [$lat, $lng, $lat])
-            ->having('distance', '<=', $radius)
-            ->orderBy('distance', 'asc');
+                ->having('distance', '<=', $radius)
+                ->orderBy('distance', 'asc');
         }
 
         // Filter kamar tersedia sesuai checkin/checkout & jumlah tamu
         if ($checkin && $checkout && $guests) {
-            $hotels->whereHas('rooms', function($q) use ($checkin, $checkout, $guests) {
+            $hotels->whereHas('rooms', function ($q) use ($checkin, $checkout, $guests) {
                 $q->where('capacity', '>=', $guests)
-                  ->whereDoesntHave('bookings', function($b) use ($checkin, $checkout) {
-                      $b->where(function($query) use ($checkin, $checkout) {
-                          $query->whereBetween('checkin', [$checkin, $checkout])
+                    ->whereDoesntHave('bookings', function ($b) use ($checkin, $checkout) {
+                        $b->where(function ($query) use ($checkin, $checkout) {
+                            $query->whereBetween('checkin', [$checkin, $checkout])
                                 ->orWhereBetween('checkout', [$checkin, $checkout])
-                                ->orWhere(function($q2) use ($checkin, $checkout) {
+                                ->orWhere(function ($q2) use ($checkin, $checkout) {
                                     $q2->where('checkin', '<=', $checkin)
-                                       ->where('checkout', '>=', $checkout);
+                                        ->where('checkout', '>=', $checkout);
                                 });
-                      });
-                  });
+                        });
+                    });
             });
         }
 
         $hotels = $hotels->get();
 
         // Format JSON
-        $data = $hotels->map(function($hotel) {
+        $data = $hotels->map(function ($hotel) {
             return [
                 'id' => $hotel->id,
                 'nama_hotel' => $hotel->nama_hotel,
@@ -88,7 +88,13 @@ class HotelController extends Controller
      */
     public function show($id)
     {
-        $hotel = Hotel::with(['images', 'rooms'])->findOrFail($id);
+        $hotel = Hotel::with([
+            'images',
+            'rooms.promos',
+            'reviews.user'
+        ])->findOrFail($id);
+
+
 
         return view('penginapan.show', compact('hotel'));
     }

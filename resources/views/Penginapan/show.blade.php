@@ -26,14 +26,28 @@
             </a> -->
 
             <!-- HEADER HOTEL -->
-            <div class="mb-8">
-                <h1 class="text-4xl font-extrabold text-gray-800 mb-2 tracking-wide">
-                    {{ $hotel->nama_hotel }}
-                </h1>
-                <p class="text-gray-500 text-lg">
-                    {{ $hotel->lokasi }}
-                </p>
+            <div class="mb-4">
+    <div class="flex items-center gap-3">
+        <h1 class="text-3xl font-bold text-gray-800">
+            {{ $hotel->nama_hotel }}
+        </h1>
+
+        {{-- BINTANG HOTEL --}}
+        @if ($hotel->stars)
+            <div class="flex text-xl">
+                @for ($i = 1; $i <= $hotel->stars; $i++)
+                    <span class="text-yellow-400">★</span>
+                @endfor
             </div>
+        @endif
+    </div>
+
+    {{-- LOKASI --}}
+    <p class="text-gray-500 mt-1">
+        {{ $hotel->lokasi }}
+    </p>
+</div>
+
 
             <!-- GALERI FOTO -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -81,6 +95,73 @@
                         </p>
                     </div>
 
+                    <!-- REVIEW HOTEL -->
+<div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">Review Hotel</h2>
+
+    @php
+        $avgRating = round($hotel->reviews->avg('rating'), 1);
+        $totalReview = $hotel->reviews->count();
+    @endphp
+
+    @if ($totalReview > 0)
+        <!-- RINGKASAN RATING -->
+        <div class="flex items-center gap-4 mb-6">
+            <div class="text-4xl font-bold text-orange-500">
+                {{ $avgRating }}
+            </div>
+
+            <div>
+                <div class="flex text-xl">
+                    @for ($i = 1; $i <= 5; $i++)
+                        <span class="{{ $i <= round($avgRating) ? 'text-yellow-400' : 'text-gray-300' }}">
+                            ★
+                        </span>
+                    @endfor
+                </div>
+                <p class="text-sm text-gray-500">
+                    Dari {{ $totalReview }} review
+                </p>
+            </div>
+        </div>
+
+        <!-- LIST REVIEW -->
+        <div class="space-y-4">
+            @foreach ($hotel->reviews->take(3) as $review)
+                <div class="border rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <p class="font-semibold text-gray-800">
+                            {{ $review->user->name }}
+                        </p>
+                        <div class="text-yellow-400 text-sm">
+                            @for ($i = 1; $i <= $review->rating; $i++)
+                                ★
+                            @endfor
+                        </div>
+                    </div>
+
+                    @if ($review->comment)
+                        <p class="text-gray-600 text-sm">
+                            {{ $review->comment }}
+                        </p>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+
+        @if ($totalReview > 3)
+            <p class="mt-4 text-sm text-gray-500">
+                Menampilkan 3 review terbaru
+            </p>
+        @endif
+    @else
+        <p class="text-gray-500">
+            Belum ada review untuk hotel ini.
+        </p>
+    @endif
+</div>
+
+
                     <!-- FASILITAS -->
                     <div class="bg-white/90 backdrop-blur rounded-2xl shadow p-6">
                         <h2 class="text-2xl font-bold mb-4">Fasilitas</h2>
@@ -123,16 +204,14 @@
                                                 </span>
                                             @endif
 
-                                            <!-- FOTO -->
-                                            <div class="w-full md:w-52 h-40 flex-shrink-0">
-                                                @if ($room->foto)
-                                                    <img src="{{ asset('storage/' . $room->foto) }}"
-                                                         class="w-full h-full object-cover rounded-xl">
-                                                @else
-                                                    <img src="/img/no-image.png"
-                                                         class="w-full h-full object-cover rounded-xl">
-                                                @endif
+                                            <!-- FOTO KAMAR -->
+                                            <div class="w-full md:w-48 h-40 flex-shrink-0">
+                                                @if($room->gambar)
+                                                    <img src="{{ asset('storage/' . $room->gambar) }}"
+                                                        class="w-full h-40 object-cover rounded-lg mb-3">
+                                                @endif          
                                             </div>
+
 
                                             <!-- INFO -->
                                             <div class="flex flex-col md:flex-row justify-between w-full gap-4">

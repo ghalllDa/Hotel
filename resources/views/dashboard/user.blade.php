@@ -182,28 +182,47 @@
 
                             <div class="p-5">
 
-                                <div class="flex justify-between items-start gap-2">
-                                    <div>
-                                        <h3 class="font-bold text-lg">
-                                            ${hotel.nama_hotel}
-                                        </h3>
-                                        <p class="text-sm text-gray-500">
-                                            ${hotel.lokasi}
-                                        </p>
-                                    </div>
+                                <!-- NAMA + BINTANG + BOOKMARK -->
+<div class="mb-2 flex justify-between items-start">
 
-                                    <button
-                                        class="bookmark-btn ${saved ? 'saved' : ''}"
-                                        data-id="${hotel.id}">
-                                        <svg width="18" height="18" viewBox="0 0 24 24">
-                                            <path
-                                                d="M6 2h12v20l-6-3-6 3V2z"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                                fill="currentColor"/>
-                                        </svg>
-                                    </button>
-                                </div>
+    <!-- KIRI: NAMA + BINTANG + LOKASI -->
+    <div>
+        <div class="flex items-center gap-2">
+            <h3 class="font-bold text-lg text-gray-800">
+                ${hotel.nama_hotel}
+            </h3>
+
+            <!-- BINTANG HOTEL -->
+            ${
+                Number(hotel.stars) > 0
+                    ? `<div class="flex text-yellow-400 text-sm leading-none">
+                            ${'★'.repeat(Number(hotel.stars))}
+                       </div>`
+                    : ''
+            }
+        </div>
+
+        <!-- LOKASI -->
+        <p class="text-sm text-gray-500">
+            ${hotel.lokasi ?? ''}
+        </p>
+    </div>
+
+    <!-- KANAN: BOOKMARK -->
+    <button
+        class="bookmark-btn ${saved ? 'saved' : ''}"
+        data-id="${hotel.id}">
+        <svg width="18" height="18" viewBox="0 0 24 24">
+            <path
+                d="M6 2h12v20l-6-3-6 3V2z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                fill="currentColor"/>
+        </svg>
+    </button>
+
+</div>
+                    
 
                                 <p class="text-orange-600 font-bold mt-2">
                                     Rp ${Number(hotel.harga).toLocaleString('id-ID')} / malam
