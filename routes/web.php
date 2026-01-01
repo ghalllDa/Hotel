@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\User\BookmarkController;
 use App\Http\Controllers\User\UserTicketController;
 use App\Http\Controllers\User\OrderHistoryController;
+use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +72,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/tickets/{ticket}', [UserTicketController::class, 'show'])
         ->name('tickets.show');
+
+
+Route::get('/reviews/{order}/create', [ReviewController::class, 'create'])
+    ->name('reviews.create');
+
 });
 
 /*
