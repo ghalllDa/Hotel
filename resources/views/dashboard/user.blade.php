@@ -14,18 +14,6 @@
                 Penginapan Hotelku
             </h1>
 
-            {{-- ========================= --}}
-            {{-- 🎫 TOMBOL TIKET --}}
-            {{-- ========================= --}}
-            <div class="flex justify-end mb-6">
-                <a href="{{ route('tickets.index') }}"
-                   class="inline-flex items-center gap-2 px-5 py-2.5
-                          bg-green-600 text-white text-sm font-semibold
-                          rounded-xl shadow hover:bg-green-700 transition">
-                    🎫 Tiket Saya
-                </a>
-            </div>
-
             <!-- HERO -->
             <div class="relative rounded-3xl overflow-hidden mb-10">
 
@@ -54,13 +42,13 @@
                         <input type="text" id="keyword" placeholder="Kota / Hotel"
                                class="border rounded-xl px-3 py-2 col-span-2">
 
-                        <input type="date" id="checkin"
+                        <input type="date"
                                class="border rounded-xl px-3 py-2">
 
-                        <input type="date" id="checkout"
+                        <input type="date"
                                class="border rounded-xl px-3 py-2">
 
-                        <input type="number" id="guests" placeholder="Tamu"
+                        <input type="number" placeholder="Tamu"
                                class="border rounded-xl px-3 py-2">
 
                         <button id="btnCari"
@@ -90,6 +78,7 @@
         </div>
     </div>
 
+    {{-- DATA DARI CONTROLLER --}}
     <script>
         window.initialHotels = @json($hotels);
         window.bookmarkedHotelIds = @json($bookmarkedHotelIds);
@@ -102,6 +91,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
+            /* ===============================
+               OPEN STREET MAP (TIDAK DIUBAH)
+            =============================== */
             const map = L.map('map').setView([-6.2, 106.816666], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap'
@@ -112,6 +104,7 @@
             function renderMarkers(hotels) {
                 markers.forEach(m => map.removeLayer(m));
                 markers = [];
+
                 hotels.forEach(hotel => {
                     if (hotel.latitude && hotel.longitude) {
                         markers.push(
@@ -123,6 +116,9 @@
                 });
             }
 
+            /* ===============================
+               HOTEL CARD + BOOKMARK
+            =============================== */
             const list = document.getElementById('hotel-list');
 
             function renderHotels(data) {
@@ -130,7 +126,10 @@
                 renderMarkers(data);
 
                 if (!data.length) {
-                    list.innerHTML = `<p class="col-span-4 text-center text-gray-500">Hotel tidak ditemukan</p>`;
+                    list.innerHTML =
+                        `<p class="col-span-4 text-center text-gray-500">
+                            Hotel tidak ditemukan
+                         </p>`;
                     return;
                 }
 
@@ -138,15 +137,43 @@
                     const saved = window.bookmarkedHotelIds.includes(hotel.id);
 
                     list.innerHTML += `
-                        <div class="bg-white/90 backdrop-blur rounded-2xl shadow-lg overflow-hidden">
-                            <img src="${hotel.images?.[0]?.path ? '/storage/' + hotel.images[0].path : '/img/no-image.png'}"
+                        <div class="bg-white/90 backdrop-blur rounded-2xl shadow-lg overflow-hidden hotel-card">
+
+                            <img src="${hotel.images?.[0]?.path
+                                ? '/storage/' + hotel.images[0].path
+                                : '/img/no-image.png'}"
                                  class="w-full h-44 object-cover">
+
                             <div class="p-5">
-                                <h3 class="font-bold text-lg">${hotel.nama_hotel}</h3>
-                                <p class="text-sm text-gray-500">${hotel.lokasi}</p>
+
+                                <!-- NAMA + LOKASI + BOOKMARK -->
+                                <div class="flex justify-between items-start gap-2">
+                                    <div>
+                                        <h3 class="font-bold text-lg">
+                                            ${hotel.nama_hotel}
+                                        </h3>
+                                        <p class="text-sm text-gray-500">
+                                            ${hotel.lokasi}
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        class="bookmark-btn ${saved ? 'saved' : ''}"
+                                        data-id="${hotel.id}">
+                                        <svg width="18" height="18" viewBox="0 0 24 24">
+                                            <path
+                                                d="M6 2h12v20l-6-3-6 3V2z"
+                                                stroke="currentColor"
+                                                stroke-width="1.5"
+                                                fill="currentColor"/>
+                                        </svg>
+                                    </button>
+                                </div>
+
                                 <p class="text-orange-600 font-bold mt-2">
                                     Rp ${Number(hotel.harga).toLocaleString('id-ID')} / malam
                                 </p>
+
                                 <a href="/hotels/${hotel.id}"
                                    class="block mt-4 bg-blue-600 text-white text-center py-2 rounded-xl">
                                     Lihat Detail
@@ -157,31 +184,73 @@
                 });
             }
 
-            // render awal
             renderHotels(window.initialHotels);
 
-            // ===============================
-            // ✅ FIX SEARCH BUTTON
-            // ===============================
+            /* ===============================
+               SEARCH (TIDAK DIUBAH)
+            =============================== */
             document.getElementById('btnCari').addEventListener('click', function () {
+                const keyword = document.getElementById('keyword').value.toLowerCase();
 
-                const keyword  = document.getElementById('keyword').value.toLowerCase();
-                const checkin  = document.getElementById('checkin').value;
-                const checkout = document.getElementById('checkout').value;
-                const guests   = document.getElementById('guests').value;
-
-                const filtered = window.initialHotels.filter(hotel => {
-                    const matchKeyword =
-                        hotel.nama_hotel.toLowerCase().includes(keyword) ||
-                        hotel.lokasi.toLowerCase().includes(keyword);
-
-                    return matchKeyword;
-                });
+                const filtered = window.initialHotels.filter(hotel =>
+                    hotel.nama_hotel.toLowerCase().includes(keyword) ||
+                    hotel.lokasi.toLowerCase().includes(keyword)
+                );
 
                 renderHotels(filtered);
             });
 
+            /* ===============================
+               BOOKMARK ACTION
+            =============================== */
+            document.addEventListener('click', function (e) {
+                const btn = e.target.closest('.bookmark-btn');
+                if (!btn) return;
+
+                const hotelId = btn.dataset.id;
+                const isSaved = btn.classList.contains('saved');
+
+                fetch(`/hotels/${hotelId}/bookmark`, {
+                    method: isSaved ? 'DELETE' : 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document
+                            .querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(() => {
+                    btn.classList.toggle('saved');
+
+                    if (btn.classList.contains('saved')) {
+                        window.bookmarkedHotelIds.push(parseInt(hotelId));
+                    } else {
+                        window.bookmarkedHotelIds =
+                            window.bookmarkedHotelIds.filter(id => id !== parseInt(hotelId));
+                    }
+                });
+            });
+
         });
     </script>
+
+    <!-- STYLE BOOKMARK -->
+    <style>
+        .bookmark-btn {
+            background: white;
+            border-radius: 9999px;
+            padding: 6px;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+        }
+
+        .bookmark-btn svg {
+            color: #9ca3af;
+        }
+
+        .bookmark-btn.saved svg {
+            color: #ef4444;
+        }
+    </style>
 
 </x-app-layout>
